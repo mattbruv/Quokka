@@ -10,6 +10,13 @@ MoveList main_pv_line = {};
 
 int num_ab = 0, num_q = 0;
 
+void check_up(SearchInfo& info) {
+
+	if (info.timed_search && get_time() > info.stop_time) {
+		info.stopped = true;
+	}
+}
+
 void search_position(Position& pos, SearchInfo& info) {
 
 	Value score;
@@ -18,20 +25,29 @@ void search_position(Position& pos, SearchInfo& info) {
 	for (int i = 1; i <= info.depth; i++) {
 		num_ab = 0;
 		num_q = 0;
+
 		// perform the search
 		score = alpha_beta(pos, info, &main_pv_line, i, -INFINITE_VALUE, INFINITE_VALUE);
-		best_move = main_pv_line.moves[0];
-		// print search results for current depth
+
+		if (info.stopped) {
+			break;
+		}
+
+		// print search results for current dept
 		cout << "info score cp " << score << " depth " << i << " nodes " << info.nodes << " time " << get_time() - info.start_time << " pv ";
 		print_move_list(main_pv_line);
 	}
 
+	best_move = main_pv_line.moves[0];
 	cout << "bestmove " << print_move(best_move) << endl;
 }
 
 // Quiescence makes sure that there are no cheeky captures at the end of the search
 Value Quiescence(Position& pos, SearchInfo& info, Value alpha, Value beta) {
 	
+	if (info.nodes % 2047 == 0)
+		check_up(info);
+
 	info.nodes++;
 
 	if (is_repetition(pos) || pos.rule50 >= 100)
@@ -61,6 +77,9 @@ Value Quiescence(Position& pos, SearchInfo& info, Value alpha, Value beta) {
 		current_eval = -Quiescence(pos, info, -beta, -alpha);
 		pos.undo_move();
 
+		if (info.stopped)
+			return 0;
+
 		if (current_eval >= beta) {
 			return beta;
 		}
@@ -83,6 +102,9 @@ Value alpha_beta(Position& pos, SearchInfo& info, MoveList* pvline, int depth, V
 		//return evaluate(pos);
 		return Quiescence(pos, info, alpha, beta);
 	}
+
+	if (info.nodes % 2047 == 0)
+		check_up(info);
 
 	info.nodes++;
 
@@ -113,6 +135,9 @@ Value alpha_beta(Position& pos, SearchInfo& info, MoveList* pvline, int depth, V
 		pos.make_move(move);
 		eval = -alpha_beta(pos, info, &temp_pv_line, depth - 1, -beta, -alpha);
 		pos.undo_move();
+
+		if (info.stopped)
+			return 0;
 
 		if (eval >= beta)
 			return beta;

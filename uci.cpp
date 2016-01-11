@@ -117,8 +117,8 @@ void go(Position& pos, SearchInfo info, istringstream& iss) {
 	
 	string token;
 
-	int depth = -1, movestogo = 30, movetime = -1;
-	int time = 0, inc = 0;
+	int depth = MAX_DEPTH, movestogo = 30, movetime = -1;
+	int time = -1, inc = 0;
 
 	while (iss >> token) {
 		if (token == "wtime" && pos.to_move == WHITE)      iss >> time;
@@ -142,17 +142,17 @@ void go(Position& pos, SearchInfo info, istringstream& iss) {
 		time /= movestogo;
 		time -= 50;
 		info.stop_time = info.start_time + time + inc;
+		info.timed_search = true;
 	}
 
-	if (depth == -1)
-		info.depth = MAX_DEPTH;
-
 	//cout << "time: " << time << " start: " << info.start_time << " stop: " << info.stop_time << " depth: " << info.depth << endl;
+	//cout << "Searching for " << info.stop_time - info.start_time << " seconds." << endl;
+	
 	int start_time = get_time();
 	search_position(pos, info);
 	int end_time = get_time();
 
-	//cout << "finished in " << (end_time - start_time) / 1000 << " seconds";
+	//cout << "finished in " << (end_time - start_time) / 1000 << " seconds" << endl;
 }
 
 // Return the time in milliseconds

@@ -11,7 +11,7 @@ typedef int Square, Color, File, Rank, Piece, PieceType, Moves, MoveScore, Value
 typedef unsigned char Byte;
 typedef unsigned long long Key, U64;
 
-const string NAME = "Quokka 1.0";
+const string NAME = "Quokka 2.0";
 const string AUTHOR = "Matt P";
 
 const int MAX_GAME_MOVES = 1024;
@@ -106,6 +106,7 @@ struct SearchInfo {
 	int depth;
 	int moves_to_go;
 	long nodes;
+	bool timed_search;
 	bool quit;
 	bool stopped;
 };
