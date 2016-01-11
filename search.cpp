@@ -45,7 +45,7 @@ void search_position(Position& pos, SearchInfo& info) {
 // Quiescence makes sure that there are no cheeky captures at the end of the search
 Value Quiescence(Position& pos, SearchInfo& info, Value alpha, Value beta) {
 	
-	if (info.nodes % 2047 == 0)
+	if (info.nodes % 2048 == 0)
 		check_up(info);
 
 	info.nodes++;
@@ -103,7 +103,7 @@ Value alpha_beta(Position& pos, SearchInfo& info, MoveList* pvline, int depth, V
 		return Quiescence(pos, info, alpha, beta);
 	}
 
-	if (info.nodes % 2047 == 0)
+	if (info.nodes % 2048 == 0)
 		check_up(info);
 
 	info.nodes++;
