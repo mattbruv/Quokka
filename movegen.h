@@ -8,6 +8,8 @@ namespace MoveGen {
 	void init();
 }
 
+void get_psuedo_legals(Position& pos, MoveList& list);
+void get_psuedo_legal_captures(Position& pos, MoveList& list);
 void generate_moves(Position& pos, MoveList& list);
 void generate_captures(Position& pos, MoveList& list);
 void sort_moves(MoveList& list);

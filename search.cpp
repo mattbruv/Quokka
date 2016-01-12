@@ -69,13 +69,21 @@ Value Quiescence(Position& pos, SearchInfo& info, Value alpha, Value beta) {
 	}
 
 	MoveList captures = {};
-	generate_captures(pos, captures);
+	get_psuedo_legal_captures(pos, captures);
 	sort_moves(captures);
 
 	current_eval = -INFINITE_VALUE;
+	int legal_moves = 0;
 
 	for (int index = 0; index < captures.count; index++) {
-		pos.make_move(captures.moves[index]);
+
+		Move capture = captures.moves[index];
+
+		if (!is_legal_move(pos, capture)) {
+			continue;
+		}
+
+		pos.make_move(capture);
 		current_eval = -Quiescence(pos, info, -beta, -alpha);
 		pos.undo_move();
 
@@ -120,20 +128,24 @@ Value alpha_beta(Position& pos, SearchInfo& info, MoveList* pvline, int depth, V
 
 	Piece our_king = create_piece(pos.to_move, KING);
 	Square king_location = pos.piece_list[our_king][0];
-	bool checked = in_check(pos);
-
-	if (checked)
-		depth++;
 
 	MoveList mlist = {};
-	generate_moves(pos, mlist);
+	get_psuedo_legals(pos, mlist);
 	sort_moves(mlist);
 	Move move;
 	Value eval = -INFINITE_VALUE;
+	int legal_moves = 0;
 
 	for (int i = 0; i < mlist.count; i++) {
 
 		move = mlist.moves[i];
+
+		if (!is_legal_move(pos, move)) {
+			continue;
+		}
+
+		legal_moves++;
+
 		pos.make_move(move);
 		eval = -alpha_beta(pos, info, &temp_pv_line, depth - 1, -beta, -alpha);
 		pos.undo_move();
@@ -156,16 +168,15 @@ Value alpha_beta(Position& pos, SearchInfo& info, MoveList* pvline, int depth, V
 		}
 	}
 
+	bool checked = in_check(pos);
+
 	// Checkmate and stalemate
-	if (mlist.count == 0) {
+	if (legal_moves == 0) {
 		if (checked)
 			return MATED + pos.game_ply;
 		else
 			return 0;
 	}
-
-	if (pos.rule50 >= 100)
-		return 0;
 
 	return alpha;
 }

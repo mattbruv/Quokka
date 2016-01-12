@@ -43,21 +43,29 @@ bool slider[7] = {
 	false, false, false, true, true, true, false
 };
 
+void get_psuedo_legals(Position& pos, MoveList& list) {
+	list = generate_pseudo_legal_moves(pos);
+}
+
+void get_psuedo_legal_captures(Position& pos, MoveList& list) {
+
+	MoveList pos_moves = {};
+	get_psuedo_legals(pos, pos_moves);
+
+	for (int i = 0; i < pos_moves.count; i++) {
+		if (pos.piece_at(pos_moves.moves[i].to) != NO_PIECE)
+			list.moves[list.count++] = pos_moves.moves[i];
+	}
+}
+
 void generate_moves(Position& pos, MoveList& list) {
 
-	pos.mobility[WHITE] = 0;
-	pos.mobility[BLACK] = 0;
 	MoveList pseudo_legals = generate_pseudo_legal_moves(pos);
 
 	for (int i = 0; i < pseudo_legals.count; i++) {
 		if (is_legal_move(pos, pseudo_legals.moves[i])) {
 			Piece p = pos.piece_at(pseudo_legals.moves[i].from);
-			pos.make_move(pseudo_legals.moves[i]);
-			if (in_check(pos))
-				pseudo_legals.moves[i].score += 200000;
-			pos.undo_move();
 			list.moves[list.count++] = pseudo_legals.moves[i];
-			pos.mobility[color_of(p)]++;
 		}
 	}
 }
