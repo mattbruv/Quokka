@@ -7,11 +7,11 @@
 
 // Principal variation line
 MoveList main_pv_line = {};
+MoveList confirmed_best_line = {};
 
 int num_ab = 0, num_q = 0;
 
 void check_up(SearchInfo& info) {
-
 	if (info.timed_search && get_time() > info.stop_time) {
 		info.stopped = true;
 	}
@@ -33,12 +33,14 @@ void search_position(Position& pos, SearchInfo& info) {
 			break;
 		}
 
+		confirmed_best_line = main_pv_line;
+
 		// print search results for current dept
 		cout << "info score cp " << score << " depth " << i << " nodes " << info.nodes << " time " << get_time() - info.start_time << " pv ";
 		print_move_list(main_pv_line);
 	}
 
-	best_move = main_pv_line.moves[0];
+	best_move = confirmed_best_line.moves[0];
 	cout << "bestmove " << print_move(best_move) << endl;
 }
 
