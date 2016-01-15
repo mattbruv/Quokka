@@ -83,26 +83,15 @@ Value rook_table[64] = {
 	0	,	0	,	5	,	10	,	10	,	5	,	0	,	0		
 };
 
-Value king_midgame_table[64] = {
-	0	,	5	,	5	,	-10	,	-10	,	0	,	10	,	5	,
-	-30	,	-30	,	-30	,	-30	,	-30	,	-30	,	-30	,	-30	,
-	-50	,	-50	,	-50	,	-50	,	-50	,	-50	,	-50	,	-50	,
-	-70	,	-70	,	-70	,	-70	,	-70	,	-70	,	-70	,	-70	,
-	-70	,	-70	,	-70	,	-70	,	-70	,	-70	,	-70	,	-70	,
-	-70	,	-70	,	-70	,	-70	,	-70	,	-70	,	-70	,	-70	,
-	-70	,	-70	,	-70	,	-70	,	-70	,	-70	,	-70	,	-70	,
-	-70	,	-70	,	-70	,	-70	,	-70	,	-70	,	-70	,	-70		
-};
-
 Value king_endgame_table[64] = {
-	0	,	0	,	-10	,	0	,	0	,	-10	,	0	,	0	,
-	0	,	0	,	0	,	10	,	10	,	0	,	0	,	0	,
-	0	,	0	,	10	,	15	,	15	,	10	,	0	,	0	,
-	0	,	10	,	15	,	20	,	20	,	15	,	10	,	0	,
-	0	,	10	,	15	,	20	,	20	,	15	,	10	,	0	,
-	0	,	0	,	10	,	15	,	15	,	10	,	0	,	0	,
-	0	,	0	,	0	,	10	,	10	,	0	,	0	,	0	,
-	0	,	0	,	0	,	0	,	0	,	0	,	0	,	0	
+	-50	,	-50	,	-50	,	-50	,	-50	,	-50	,	-50	,	-50	,
+	0	,	0	,	0	,	0	,	0	,	0	,	0	,	0	,
+	50	,	50	,	50	,	50	,	50	,	50	,	50	,	50	,
+	200	,	200	,	200	,	200	,	200	,	200	,	200	,	200	,
+	400	,	400	,	400	,	400	,	400	,	400	,	400	,	400	,
+	700	,	700	,	700	,	700	,	700	,	700	,	700	,	700	,
+	1000,	1000,	1000,	1000,	1000,	1000,	1000,	1000,
+	9999,	9999,	9999,	9999,	9999,	9999,	9999,	9999,
 };
 
 // evaluate() evaluates the given position, and returns it's score in centipawns
@@ -144,24 +133,6 @@ Value evaluate(Position& pos) {
 				score += table_value(pos, piece, square, us);
 			else
 				score -= table_value(pos, piece, square, us);
-
-			// evaluate pawns
-			if (type == PAWN) {
-				if (is_pawn_passed(piece, square)) {
-					Square s = (color_of(piece) == WHITE) ? to64(square) : mirror64[to64(square)];
-					Rank r = rank_of(s);
-					if (color_of(piece) == us)
-						score += passed_pawn_bonus[r];
-					else
-						score -= passed_pawn_bonus[r];
-				}
-				if (is_pawn_doubled(piece, square)) {
-					if (color_of(piece) == us)
-						score += double_pawn_penalty;
-					else
-						score -= double_pawn_penalty;
-				}
-			}
 
 			// evaluate rooks
 			if (type == ROOK) {
@@ -209,14 +180,15 @@ Value evaluate(Position& pos) {
 // A function which returns the relative value for a piece on a square
 Value table_value(Position& pos, Piece p, Square s, Color side) {
 
-	s = (color_of(p) == WHITE) ? to64(s) : mirror64[to64(s)];
+	//s = (color_of(p) == WHITE) ? to64(s) : mirror64[to64(s)];
+	s = to64(s);
 
 	switch (type_of(p)) {
 		case PAWN:   return pawn_table[s];
 		case KNIGHT: return knight_table[s];
 		case BISHOP: return bishop_table[s];
 		case ROOK:   return rook_table[s];
-		case KING:   return (is_endgame(pos)) ? king_endgame_table[s] : king_midgame_table[s];
+		case KING:   return king_endgame_table[s];
 		default:     return 0;
 	}
 }
@@ -224,30 +196,6 @@ Value table_value(Position& pos, Piece p, Square s, Color side) {
 // determines if a position is in the endgame for the side to move
 bool is_endgame(Position& pos) {
 	return (pos.material[!pos.to_move] <= endgame_material) ? true : false;
-}
-
-// determines if a pawn is passed
-bool is_pawn_passed(Piece p, Square s) {
-
-	s = to64(s);
-	File pawnfile = file_of(s);
-	Color them = !color_of(p);
-
-	Rank left = (pawnfile - 1 < FILE_A) ? FILE_A : pawnfile - 1; // If the file is less than the A File
-	Rank right = (pawnfile + 1 > FILE_H) ? FILE_H : pawnfile + 1; // if the file is greater than the H file
-
-	// if there are no enemy pawns on the left of, in front of, and to the right of our pawn, it is passed.
-	return (!pawns_on_file[them][left] && !pawns_on_file[them][pawnfile] && !pawns_on_file[them][right]) ? true : false;
-}
-
-// determines if a pawn is doubled
-bool is_pawn_doubled(Piece p, Square s) {
-
-	s = to64(s);
-	File pawnfile = file_of(s);
-	Color us = color_of(p);
-
-	return (pawns_on_file[us][pawnfile] > 1) ? true : false;
 }
 
 // determines if a file is open of enemy and friendly pawns

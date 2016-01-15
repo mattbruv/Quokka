@@ -108,31 +108,6 @@ MoveList generate_pseudo_legal_moves(Position& pos) {
 
 	Piece our_pawns = create_piece(our_side, PAWN);
 
-	// Loop through pawns
-	for (int i = 0; i < pos.piece_num[our_pawns]; i++) {
-		Square from_square = pos.piece_list[our_pawns][i];
-
-		// Capture left
-		Square to_square = from_square + NW;
-		if ((pos.piece_at(to_square) != NO_PIECE && color_of(pos.piece_at(to_square)) != our_side) || to_square == pos.en_passant_target)
-			add_pawn_move(pos, list, from_square, to_square);
-
-		// Capture right
-		to_square = from_square + NE;
-		if ((pos.piece_at(to_square) != NO_PIECE && color_of(pos.piece_at(to_square)) != our_side) || to_square == pos.en_passant_target)
-			add_pawn_move(pos, list, from_square, to_square);
-
-		// Advance forward
-		to_square = from_square + N;
-		if (pos.piece_at(to_square) == NO_PIECE) {
-			add_pawn_move(pos, list, from_square, to_square);
-
-			// If the square two squares behind our pawn is offboard, we're on the second rank and can push twice
-			if (!square_on_board(from_square + S + S) && pos.piece_at(to_square + N) == NO_PIECE)
-				add_pawn_move(pos, list, from_square, to_square + N);
-		}
-	}
-
 	// Loop from white/black Knight to white/black King and generate moves for each
 	for (int i = create_piece(our_side, KNIGHT); i <= create_piece(our_side, KING); i++) {
 
@@ -236,16 +211,25 @@ void add_move(Position& pos, MoveList& list, Square from, Square to, Piece promo
 bool is_legal_move(Position& pos, Move m) {
 
 	Piece our_king = create_piece(pos.to_move, KING);
+	Piece their_king = create_piece(!pos.to_move, KING);
+
 	pos.make_move(m);
 
+	bool is_legal = true;
+
 	// If our king isn't in check after the move, we can add it to the list
-	if (!square_attacked(pos, pos.piece_list[our_king][0], pos.to_move)) {
-		pos.undo_move();
-		return true;
+	if (square_attacked(pos, pos.piece_list[our_king][0], pos.to_move)) {
+		bool is_legal = false;
+	}
+
+	// If the enemy king isn't in check after the move, it is legal
+	if (square_attacked(pos, pos.piece_list[their_king][0], !pos.to_move)) {
+		bool is_legal = false;
 	}
 
 	pos.undo_move();
-	return false;
+
+	return is_legal;
 }
 
 // move_in_list() returns the location of a move if it's in the specified move list

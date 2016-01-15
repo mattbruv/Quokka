@@ -9,15 +9,6 @@ int KingMoves[8] = { 11, 10, 9, 1, -1, -9, -10, -11 };
 // square_attacked() is a function which 
 bool square_attacked(Position& pos, Square square, Color side) {
 
-	// Pawns
-	if (side != WHITE) {
-		if (pos.piece_at(square + DELTA_NE) == B_PAWN || pos.piece_at(square + DELTA_NW) == B_PAWN)
-			return true;
-	} else {
-		if (pos.piece_at(square + DELTA_SE) == W_PAWN || pos.piece_at(square + DELTA_SW) == W_PAWN)
-			return true;
-	}
-
 	Piece attacker;
 	Square offset;
 
