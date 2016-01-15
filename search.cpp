@@ -109,7 +109,6 @@ Value alpha_beta(Position& pos, SearchInfo& info, MoveList* pvline, int depth, V
 	// If we are at a leaf node, evaluate the position
 	if (depth == 0) {
 		pvline->count = 0;
-		//return evaluate(pos);
 		return Quiescence(pos, info, alpha, beta);
 	}
 
