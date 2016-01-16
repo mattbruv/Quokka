@@ -42,7 +42,7 @@ void UCI::loop() {
 		else if (token == "p")          debug(pos);
 		else if (token == "m")          make_move(pos, iss);
 		else if (token == "u")          pos.undo_move();
-		else if (token == "set")        pos.parse_fen("8/8/8/8/5K2/8/k7/8 w - -");
+		else if (token == "set")        pos.parse_fen("8/q7/6K1/2k5/8/8/2rnNR2/1rb2BRQ w - - 3 7 ");
 		else if (token == "perft")      do_perft(pos, iss);
 		else
 			cout << "Unknown command: " << command << endl;

@@ -219,12 +219,12 @@ bool is_legal_move(Position& pos, Move m) {
 
 	// If our king isn't in check after the move, we can add it to the list
 	if (square_attacked(pos, pos.piece_list[our_king][0], pos.to_move)) {
-		bool is_legal = false;
+		is_legal = false;
 	}
 
 	// If the enemy king isn't in check after the move, it is legal
 	if (square_attacked(pos, pos.piece_list[their_king][0], !pos.to_move)) {
-		bool is_legal = false;
+		is_legal = false;
 	}
 
 	pos.undo_move();
