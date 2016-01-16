@@ -65,6 +65,11 @@ void generate_moves(Position& pos, MoveList& list) {
 	for (int i = 0; i < pseudo_legals.count; i++) {
 		if (is_legal_move(pos, pseudo_legals.moves[i])) {
 			Piece p = pos.piece_at(pseudo_legals.moves[i].from);
+			if (type_of(p) == KING) {
+				if (rank_of(to64(pseudo_legals.moves[i].to)) == 7) {
+					list.king_moves_to_last_rank++;
+				}
+			}
 			list.moves[list.count++] = pseudo_legals.moves[i];
 		}
 	}

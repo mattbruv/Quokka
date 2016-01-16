@@ -2,7 +2,7 @@
 #include "movegen.h"
 #include "attack.h"
 
-const Value bishop_pair_bonus = 30;
+const Value bishop_pair_bonus = 100;
 const Value passed_pawn_bonus[8] = { 0, 5, 10, 20, 35, 60, 100, 200 };
 const Value rook_open_file_bonus = 10;
 const Value rook_semi_open_file_bonus = 5;
@@ -14,7 +14,7 @@ const Value double_pawn_penalty = -15;
 const Value endgame_material = (value_of(ROOK) + 2 * value_of(KNIGHT) + 2 * value_of(PAWN));
 
 // Value of each type of piece from pawn to king
-Value piece_values[7] = { 0, 100, 300, 300, 500, 900, INFINITE_VALUE };
+Value piece_values[7] = { 0, 100, 250, 300, 500, 900, INFINITE_VALUE };
 
 // helper function to return the value of a type of piece
 inline Value value_of(PieceType ptype) {
@@ -85,12 +85,12 @@ Value rook_table[64] = {
 
 Value king_endgame_table[64] = {
 	-50	,	-50	,	-50	,	-50	,	-50	,	-50	,	-50	,	-50	,
-	0	,	0	,	0	,	0	,	0	,	0	,	0	,	0	,
 	50	,	50	,	50	,	50	,	50	,	50	,	50	,	50	,
+	100	,	100	,	100	,	100	,	100	,	100	,	100	,	100	,
 	200	,	200	,	200	,	200	,	200	,	200	,	200	,	200	,
 	400	,	400	,	400	,	400	,	400	,	400	,	400	,	400	,
-	700	,	700	,	700	,	700	,	700	,	700	,	700	,	700	,
-	1000,	1000,	1000,	1000,	1000,	1000,	1000,	1000,
+	900 ,	900 ,	900 ,	900 ,	900 ,	900 ,	900 ,	900 ,
+	1300,	1300,	1300,	1300,	1300,	1300,	1300,	1300,
 	9999,	9999,	9999,	9999,	9999,	9999,	9999,	9999,
 };
 
@@ -105,18 +105,12 @@ Value evaluate(Position& pos) {
 	PieceType type;
 
 	score = pos.material[us] - pos.material[them];
-	//score += pos.mobility[us] - pos.mobility[them];
 
-	// Get pawn positions
-	for (int i = 0; i < 10; i++) {
-		Piece wpawn = pos.piece_list[create_piece(WHITE, PAWN)][i];
-		Piece bpawn = pos.piece_list[create_piece(BLACK, PAWN)][i];
-
-		if (wpawn)
-			pawns_on_file[WHITE][file_of(to64(wpawn))]++;
-		if (bpawn)
-			pawns_on_file[BLACK][file_of(to64(bpawn))]++;
-	}
+	// Bishop Pair
+	if (pos.piece_num[create_piece(us, BISHOP)] >= 2 && pos.piece_num[create_piece(them, BISHOP)] < 2)
+		score += bishop_pair_bonus;
+	if (pos.piece_num[create_piece(us, BISHOP)] < 2 && pos.piece_num[create_piece(them, BISHOP)] >= 2)
+		score -= bishop_pair_bonus;
 
 	// Loop through all the pieces
 	for (int i = W_PAWN; i <= B_KING; i++) {
@@ -133,46 +127,33 @@ Value evaluate(Position& pos) {
 				score += table_value(pos, piece, square, us);
 			else
 				score -= table_value(pos, piece, square, us);
+		}
 
-			// evaluate rooks
-			if (type == ROOK) {
-				if (is_open_file(piece, square)) {
-					if (color_of(piece) == us)
-						score += rook_open_file_bonus;
-					else
-						score -= rook_open_file_bonus;
-				}
-				if (is_half_open_file(piece, square)) {
-					if (color_of(piece) == us)
-						score += rook_semi_open_file_bonus;
-					else
-						score -= rook_semi_open_file_bonus;
-				}
-			}
+		Piece white_king = pos.piece_list[create_piece(us, KING)][0];
+		Piece black_king = pos.piece_list[create_piece(them, KING)][0];
 
-			// evaluate queens
-			if (type == QUEEN) {
-				if (is_open_file(piece, square)) {
-					if (color_of(piece) == us)
-						score += queen_open_file_bonus;
-					else
-						score -= queen_open_file_bonus;
+		Rank white_rank = rank_of(to64(white_king));
+		Rank black_rank = rank_of(to64(black_king));
+
+		if (pos.to_move == WHITE) {
+			if (white_rank == 7) {
+				if (black_rank == 7) {
+					score = 0;
 				}
-				if (is_half_open_file(piece, square)) {
-					if (color_of(piece) == us)
-						score += queen_semi_open_file_bonus;
-					else
-						score -= queen_semi_open_file_bonus;
+				else {
+					score = MATE - pos.game_ply;
 				}
 			}
 		}
+		else {
+			if (white_rank == 7) {
+				if (black_rank != 7)
+					score = -MATE - pos.game_ply;
+				else
+					score = MATE - pos.game_ply;
+			}
+		}
 	}
-
-	// Bishop Pair
-	if (pos.piece_num[create_piece(us, BISHOP)] >= 2 && pos.piece_num[create_piece(them, BISHOP)] < 2)
-		score += bishop_pair_bonus;
-	if (pos.piece_num[create_piece(us, BISHOP)] < 2 && pos.piece_num[create_piece(them, BISHOP)] >= 2)
-		score -= bishop_pair_bonus;
 
 	return score;
 }
@@ -184,10 +165,11 @@ Value table_value(Position& pos, Piece p, Square s, Color side) {
 	s = to64(s);
 
 	switch (type_of(p)) {
+		/*
 		case PAWN:   return pawn_table[s];
 		case KNIGHT: return knight_table[s];
 		case BISHOP: return bishop_table[s];
-		case ROOK:   return rook_table[s];
+		case ROOK:   return rook_table[s];*/
 		case KING:   return king_endgame_table[s];
 		default:     return 0;
 	}

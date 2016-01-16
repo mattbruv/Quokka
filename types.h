@@ -87,6 +87,7 @@ struct Move {
 struct MoveList {
 	Move moves[MAX_POSITION_MOVES];
 	int count;
+	int king_moves_to_last_rank;
 };
 
 // The Snapshot structure holds information about a specific chess position

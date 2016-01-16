@@ -146,15 +146,7 @@ Value alpha_beta(Position& pos, SearchInfo& info, MoveList* pvline, int depth, V
 		legal_moves++;
 
 		pos.make_move(move);
-
-		// King eval
-		if (rank_of(to64(king_location)) == 7) {
-			eval = MATE;
-		}
-		else {
-			eval = -alpha_beta(pos, info, &temp_pv_line, depth - 1, -beta, -alpha);
-		}
-
+		eval = -alpha_beta(pos, info, &temp_pv_line, depth - 1, -beta, -alpha);
 		pos.undo_move();
 
 		if (info.stopped)

@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "position.h"
+#include <iostream>
 
 Value evaluate(Position& pos);
 Value table_value(Position& pos, Piece p, Square s, Color side);
