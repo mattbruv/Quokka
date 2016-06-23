@@ -18,7 +18,7 @@ const Value endgame_material = (value_of(ROOK) + 2 * value_of(KNIGHT) + 2 * valu
 Value piece_values[7] = { 0, 100, 300, 300, 500, 900, INFINITE_VALUE };
 
 // helper function to return the value of a type of piece
-inline Value value_of(PieceType ptype) {
+extern Value value_of(PieceType ptype) {
 	return piece_values[ptype];
 }
 

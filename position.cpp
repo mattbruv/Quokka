@@ -27,57 +27,57 @@ Key side_key;
 Key castle_keys[16];
 
 // Takes a file and rank and returns their 120 based square index
-extern inline Square FR2SQ(File f, Rank r) {
+extern Square FR2SQ(File f, Rank r) {
 	return ((f + 21) + (r * 10));
 }
 
 // Converts a 120 based square to a 64 based square index
-extern inline Square to64(Square s) {
+extern Square to64(Square s) {
 	return sq120_to_64[s];
 }
 
 // Converts a 64 based square to a 120 based square index
-extern inline Square to120(Square s) {
+extern Square to120(Square s) {
 	return sq64_to_120[s];
 }
 
 // Convert a 64 based square to a file
-extern inline File file_of(Square s) {
+extern File file_of(Square s) {
 	return s & 7;
 }
 
 // Convert a 64 based square to a rank
-extern inline Rank rank_of(Square s) {
+extern Rank rank_of(Square s) {
 	return s >> 3;
 }
 
 // Get the color of a piece
-extern inline Color color_of(Piece p) {
+extern Color color_of(Piece p) {
 	return (p <= W_KING) ? WHITE : BLACK;
 }
 
 // Get the type of a piece
-extern inline PieceType type_of(Piece p) {
+extern PieceType type_of(Piece p) {
 	return piece_type[p];
 }
 
 // Test if a 120 index is on the legal board
-extern inline bool square_on_board(Square s) {
+extern bool square_on_board(Square s) {
 	return (to64(s) != OFFBOARD) ? true : false;
 }
 
 // Set a bit to zero (for disabling castling perms)
-extern inline void clear_bit(Byte& i, int bit) {
+extern void clear_bit(Byte& i, int bit) {
 	i &= ~(bit);
 }
 
 // Helper function to create a piece
-extern inline Piece create_piece(Color side, PieceType ptype) {
+extern Piece create_piece(Color side, PieceType ptype) {
 	return (6 * side + ptype);
 }
 
 // Helper function to create a move
-Move create_move(Square from, Square to, Piece promotion, bool castle, int score) {
+extern Move create_move(Square from, Square to, Piece promotion, bool castle, int score) {
 	Move m;
 	m.from = from;
 	m.to = to;

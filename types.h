@@ -11,8 +11,8 @@ typedef int Square, Color, File, Rank, Piece, PieceType, Moves, MoveScore, Value
 typedef unsigned char Byte;
 typedef unsigned long long Key, U64;
 
-const string NAME = "Quokka 2.0";
-const string AUTHOR = "Matt P";
+const string NAME = "quokkandroid";
+const string AUTHOR = "Motka";
 
 const int MAX_GAME_MOVES = 1024;
 const int MAX_POSITION_MOVES = 256;
@@ -114,16 +114,16 @@ struct SearchInfo {
 // Global Functions
 
 extern Square FR2SQ(File f, Rank r);
-extern inline Square to64(Square s);
-extern inline Square to120(Square s);
+extern Square to64(Square s);
+extern Square to120(Square s);
 extern File file_of(Square s);
-extern inline Rank rank_of(Square s);
+extern Rank rank_of(Square s);
 extern string print_move(Move m);
-extern inline Color color_of(Piece p);
-extern inline PieceType type_of(Piece p);
-extern inline bool square_on_board(Square s);
+extern Color color_of(Piece p);
+extern PieceType type_of(Piece p);
+extern bool square_on_board(Square s);
 extern Move create_move(Square from, Square to, Piece promotion = NO_PIECE, bool castle = false, int score = 0);
-extern inline Piece create_piece(Color side, PieceType ptype);
+extern Piece create_piece(Color side, PieceType ptype);
 extern Value value_of(PieceType ptype);
 extern int get_time();
 

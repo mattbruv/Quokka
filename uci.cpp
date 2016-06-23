@@ -17,9 +17,8 @@ void UCI::loop() {
 	string command, token;
 
 	// Main UCI loop
-	while (true) {
-
-		if (!getline(cin, command)) // wait for user input
+	do {
+		if (!getline(cin, command))
 			command = "quit";
 
 		istringstream iss(command);
@@ -37,7 +36,7 @@ void UCI::loop() {
 		else if (token == "ucinewgame") pos.parse_fen(start_FEN);
 		else if (token == "go")         go(pos, info, iss);
 		else if (token == "position")   position(pos, iss);
-		else if (token == "setoption")  {}
+		else if (token == "setoption") {}
 		else if (token == "isready")    cout << "readyok" << endl;
 		else if (token == "p")          debug(pos);
 		else if (token == "m")          make_move(pos, iss);
@@ -46,7 +45,7 @@ void UCI::loop() {
 		else if (token == "perft")      do_perft(pos, iss);
 		else
 			cout << "Unknown command: " << command << endl;
-	}
+	} while (token != "quit");
 }
 
 // Make a move
