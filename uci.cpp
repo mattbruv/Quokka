@@ -2,7 +2,6 @@
 #include <sstream>
 #include <string>
 #include <ctime>
-#include <Windows.h>
 
 #include "uci.h"
 
@@ -69,12 +68,12 @@ void debug(Position& pos) {
 }
 
 void do_perft(Position& pos, istringstream& iss) {
-	string token;
-	iss >> token;
+	//string token;
+	//iss >> token;
 
-	int depth = (token == "") ? 1 : stoi(token);
+//	int depth = (token == "") ? 1 : stoi(token);
 
-	cout << "Nodes at depth " << depth << ": " << perft(pos, depth) << endl;
+	//cout << "Nodes at depth " << depth << ": " << perft(pos, depth) << endl;
 }
 
 // position() is called when engine receives the "position" UCI command.
@@ -136,7 +135,9 @@ void go(Position& pos, SearchInfo info, istringstream& iss) {
 	}
 
 	info.start_time = get_time();
-	info.depth = depth;
+	info.depth = 5;
+
+	time = -1;
 
 	if (time != -1) {
 		time /= movestogo;
@@ -157,5 +158,5 @@ void go(Position& pos, SearchInfo info, istringstream& iss) {
 
 // Return the time in milliseconds
 int get_time() {
-	return GetTickCount64();
+	return 0;
 }
