@@ -1,3 +1,4 @@
+#include "types.h"
 #include "evaluate.h"
 #include "movegen.h"
 #include "attack.h"

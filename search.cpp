@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "types.h"
 #include "search.h"
 #include "evaluate.h"
 #include "attack.h"

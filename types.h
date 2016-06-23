@@ -114,16 +114,16 @@ struct SearchInfo {
 // Global Functions
 
 extern Square FR2SQ(File f, Rank r);
-extern Square to64(Square s);
-extern Square to120(Square s);
+extern inline Square to64(Square s);
+extern inline Square to120(Square s);
 extern File file_of(Square s);
-extern Rank rank_of(Square s);
+extern inline Rank rank_of(Square s);
 extern string print_move(Move m);
-extern Color color_of(Piece p);
-extern PieceType type_of(Piece p);
-extern bool square_on_board(Square s);
+extern inline Color color_of(Piece p);
+extern inline PieceType type_of(Piece p);
+extern inline bool square_on_board(Square s);
 extern Move create_move(Square from, Square to, Piece promotion = NO_PIECE, bool castle = false, int score = 0);
-extern Piece create_piece(Color side, PieceType ptype);
+extern inline Piece create_piece(Color side, PieceType ptype);
 extern Value value_of(PieceType ptype);
 extern int get_time();
 

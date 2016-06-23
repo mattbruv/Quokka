@@ -3,6 +3,7 @@
 #include <string>
 #include <ctime>
 
+#include "types.h"
 #include "uci.h"
 
 // FEN string of the initial position

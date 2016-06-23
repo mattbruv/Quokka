@@ -1,3 +1,4 @@
+#include "types.h"
 #include "attack.h"
 #include "position.h"
 

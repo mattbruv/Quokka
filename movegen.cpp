@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 
+#include "types.h"
 #include "movegen.h"
 #include "attack.h"
 

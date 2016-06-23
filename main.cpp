@@ -1,4 +1,5 @@
 #include <iostream>
+#include "types.h"
 #include "position.h"
 #include "movegen.h"
 #include "uci.h"

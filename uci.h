@@ -12,7 +12,6 @@
 #include "perft.h"
 
 namespace UCI {
-	void init();
 	void loop();
 }
 

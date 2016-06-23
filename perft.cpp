@@ -1,3 +1,4 @@
+#include "types.h"
 #include "perft.h"
 
 U64 perft(Position& pos, int depth) {
