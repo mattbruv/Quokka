@@ -24,7 +24,7 @@ public:
 	Key pos_key; // Key of the previous position to modify
 
 	Position();
-	Position::Position(const string fen);
+	Position(const string fen);
 	static void init();
 	void print_board();
 	void parse_fen(const string& fen);
