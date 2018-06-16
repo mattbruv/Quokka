@@ -24,7 +24,7 @@ public:
 	Key pos_key; // Key of the previous position to modify
 
 	Position();
-	Position::Position(const string fen);
+	Position(const string fen);
 	static void init();
 	void print_board();
 	void parse_fen(const string& fen);
@@ -46,6 +46,9 @@ private:
 
 };
 
+Piece create_piece(Color side, PieceType ptype);
+
 extern void parse_UCI_move(Position& pos, string& str);
+extern bool square_on_board(Square s);
 
 #endif // !__POSITION_H__

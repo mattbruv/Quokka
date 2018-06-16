@@ -1,6 +1,8 @@
 #include <iostream>
 #include <algorithm>
 
+#include "types.h"
+#include "position.h"
 #include "movegen.h"
 #include "attack.h"
 
@@ -64,7 +66,7 @@ void generate_moves(Position& pos, MoveList& list) {
 
 	for (int i = 0; i < pseudo_legals.count; i++) {
 		if (is_legal_move(pos, pseudo_legals.moves[i])) {
-			Piece p = pos.piece_at(pseudo_legals.moves[i].from);
+			//Piece p = pos.piece_at(pseudo_legals.moves[i].from);
 			list.moves[list.count++] = pseudo_legals.moves[i];
 		}
 	}
@@ -97,12 +99,10 @@ MoveList generate_pseudo_legal_moves(Position& pos) {
 	MoveList list = {};
 
 	Color our_side = pos.to_move;
-	Square N, E, S, W, NE, NW;
+	Square N, S, NE, NW;
 
 	N = (our_side == WHITE) ? DELTA_N : DELTA_S;
-	E = (our_side == WHITE) ? DELTA_E : DELTA_W;
 	S = (our_side == WHITE) ? DELTA_S : DELTA_N;
-	W = (our_side == WHITE) ? DELTA_W : DELTA_E;
 	NE = (our_side == WHITE) ? DELTA_NE : DELTA_SW;
 	NW = (our_side == WHITE) ? DELTA_NW : DELTA_SE;
 
@@ -264,4 +264,8 @@ void print_move_list(MoveList& list) {
 		cout << print_move(list.moves[i]) << " ";
 	}
 	cout << endl;
+}
+
+inline Piece create_piece(int side, int ptype) {
+	return (6 * side + ptype);
 }

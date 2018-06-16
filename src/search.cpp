@@ -1,3 +1,4 @@
+#include <cstring>
 #include <iostream>
 
 #include "search.h"
@@ -73,7 +74,7 @@ Value Quiescence(Position& pos, SearchInfo& info, Value alpha, Value beta) {
 	sort_moves(captures);
 
 	current_eval = -INFINITE_VALUE;
-	int legal_moves = 0;
+	//int legal_moves = 0;
 
 	for (int index = 0; index < captures.count; index++) {
 
@@ -125,9 +126,6 @@ Value alpha_beta(Position& pos, SearchInfo& info, MoveList* pvline, int depth, V
 	if (pos.game_ply > MAX_GAME_MOVES - 1) {
 		return evaluate(pos);
 	}
-
-	Piece our_king = create_piece(pos.to_move, KING);
-	Square king_location = pos.piece_list[our_king][0];
 
 	MoveList mlist = {};
 	get_psuedo_legals(pos, mlist);

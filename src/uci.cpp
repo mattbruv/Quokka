@@ -1,8 +1,8 @@
 #include <iostream>
+#include <chrono>
 #include <sstream>
 #include <string>
 #include <ctime>
-#include <Windows.h>
 
 #include "uci.h"
 
@@ -148,14 +148,18 @@ void go(Position& pos, SearchInfo info, istringstream& iss) {
 	//cout << "time: " << time << " start: " << info.start_time << " stop: " << info.stop_time << " depth: " << info.depth << endl;
 	//cout << "Searching for " << info.stop_time - info.start_time << " seconds." << endl;
 	
-	int start_time = get_time();
+	//int start_time = get_time();
 	search_position(pos, info);
-	int end_time = get_time();
+	//int end_time = get_time();
 
-	//cout << "finished in " << (end_time - start_time) / 1000 << " seconds" << endl;
+	//cout << "finished in " << (end_time - start_time) << " milliseconds" << endl;
 }
 
 // Return the time in milliseconds
 int get_time() {
-	return GetTickCount64();
+	using namespace std::chrono;
+	milliseconds ms = duration_cast<milliseconds>(
+	    system_clock::now().time_since_epoch()
+	);
+	return ms.count();
 }

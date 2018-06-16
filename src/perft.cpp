@@ -2,7 +2,7 @@
 
 U64 perft(Position& pos, int depth) {
 
-	int num_moves = 0;
+	//int num_moves = 0;
 	U64 nodes = 0;
 
 	if (depth == 0)

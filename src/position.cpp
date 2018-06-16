@@ -1,8 +1,10 @@
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <sstream>
 #include <algorithm>
 
+#include "types.h"
 #include "position.h"
 #include "movegen.h"
 #include "attack.h"
@@ -60,19 +62,9 @@ inline PieceType type_of(Piece p) {
 	return piece_type[p];
 }
 
-// Test if a 120 index is on the legal board
-inline bool square_on_board(Square s) {
-	return (to64(s) != OFFBOARD) ? true : false;
-}
-
 // Set a bit to zero (for disabling castling perms)
 inline void clear_bit(Byte& i, int bit) {
 	i &= ~(bit);
-}
-
-// Helper function to create a piece
-inline Piece create_piece(Color side, PieceType ptype) {
-	return (6 * side + ptype);
 }
 
 // Helper function to create a move
@@ -529,7 +521,6 @@ void Position::take_snapshot(Move m) {
 // Position::generate_position_key() generates a unique hash key for the position to check for repetition draws
 Key Position::generate_position_key() {
 
-	Piece piece = NO_PIECE;
 	Key poskey = 0;
 
 	// Add piece locations from piece list for each type and number of piece
