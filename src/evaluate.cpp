@@ -17,11 +17,6 @@ const Value endgame_material = (value_of(ROOK) + 2 * value_of(KNIGHT) + 2 * valu
 // Value of each type of piece from pawn to king
 Value piece_values[7] = { 0, 100, 300, 300, 500, 900, INFINITE_VALUE };
 
-// helper function to return the value of a type of piece
-inline Value value_of(PieceType ptype) {
-	return piece_values[ptype];
-}
-
 // Array which holds information on the number of pawns on a file for each side
 int pawns_on_file[2][8] = {};
 

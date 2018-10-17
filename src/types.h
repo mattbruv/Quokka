@@ -32,7 +32,6 @@ enum {
 	A7 = 81, B7, C7, D7, E7, F7, G7, H7,
 	A8 = 91, B8, C8, D8, E8, F8, G8, H8,
 
-	OFFBOARD = 99,
 	SQ_NONE = -1,
 
 	DELTA_N = 10,
@@ -111,18 +110,7 @@ struct SearchInfo {
 	bool stopped;
 };
 
-extern Square FR2SQ(File f, Rank r);
-extern Square to64(Square s);
-extern Square to120(Square s);
-extern File file_of(Square s);
-extern Rank rank_of(Square s);
-extern Color color_of(Piece p);
-extern PieceType type_of(Piece p);
-extern bool square_on_board(Square s);
 extern Move create_move(Square from, Square to, Piece promotion = NO_PIECE, bool castle = false, int score = 0);
-extern Value value_of(PieceType ptype);
-
-extern Piece create_piece(int side, int ptype);
 
 
 extern int get_time();
@@ -130,18 +118,7 @@ extern string print_move(Move m);
 
 // Global Functions
 /*
-extern Square FR2SQ(File f, Rank r);
-extern Square to64(Square s);
-extern Square to120(Square s);
-extern File file_of(Square s);
-extern Rank rank_of(Square s);
-extern Color color_of(Piece p);
-extern PieceType type_of(Piece p);
-extern bool square_on_board(Square s);
 extern Move create_move(Square from, Square to, Piece promotion = NO_PIECE, bool castle = false, int score = 0);
-extern Value value_of(PieceType ptype);
-
-Piece create_piece(Color side, PieceType ptype);
 
 */
 #endif // !__TYPES_H__

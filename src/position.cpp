@@ -8,6 +8,7 @@
 #include "position.h"
 #include "movegen.h"
 #include "attack.h"
+#include "evaluate.h" // value_of
 
 using namespace std;
 
@@ -27,46 +28,6 @@ Key piece_keys[13][120];
 Key side_key;
 Key castle_keys[16];
 
-// Takes a file and rank and returns their 120 based square index
-inline Square FR2SQ(File f, Rank r) {
-	return ((f + 21) + (r * 10));
-}
-
-// Converts a 120 based square to a 64 based square index
-inline Square to64(Square s) {
-	return sq120_to_64[s];
-}
-
-// Converts a 64 based square to a 120 based square index
-inline Square to120(Square s) {
-	return sq64_to_120[s];
-}
-
-// Convert a 64 based square to a file
-inline File file_of(Square s) {
-	return s & 7;
-}
-
-// Convert a 64 based square to a rank
-inline Rank rank_of(Square s) {
-	return s >> 3;
-}
-
-// Get the color of a piece
-inline Color color_of(Piece p) {
-	return (p <= W_KING) ? WHITE : BLACK;
-}
-
-// Get the type of a piece
-inline PieceType type_of(Piece p) {
-	return piece_type[p];
-}
-
-// Set a bit to zero (for disabling castling perms)
-inline void clear_bit(Byte& i, int bit) {
-	i &= ~(bit);
-}
-
 // Helper function to create a move
 Move create_move(Square from, Square to, Piece promotion, bool castle, int score) {
 	Move m;
@@ -83,11 +44,11 @@ string coord(Square s) {
 
 	ostringstream oss;
 	char file;
-	int rank;
+	char rank;
 
 	s = to64(s);
-	file = (char) file_of(s) + 97;
-	rank = rank_of(s) + 1;
+	file = 'a' + file_of(s);
+	rank = '1' + rank_of(s);
 	oss << file << rank;
 	return oss.str();
 }
@@ -147,7 +108,7 @@ void init_lookup_tables() {
 
 	// Set offboard values for move generation
 	for (int i = 0; i < 120; i++)
-		sq120_to_64[i] = OFFBOARD;
+		sq120_to_64[i] = SQ_NONE;
 
 	File file;
 	Rank rank;
@@ -452,6 +413,7 @@ void Position::undo_castling(Move m) {
 
 // Position::piece_at() returns the piece on the specified square
 Piece Position::piece_at(Square s) {
+
 	return board[s];
 }
 
