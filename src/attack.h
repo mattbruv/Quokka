@@ -9,7 +9,7 @@ bool in_check(Position& pos);
 
 // Test if a 120 index is on the legal board
 inline bool square_on_board(Square s) {
-	return (to64(s) != OFFBOARD) ? true : false;
+	return s >= 0 && s < 120 && to64(s) != SQ_NONE;
 }
 
 #endif

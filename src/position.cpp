@@ -108,7 +108,7 @@ void init_lookup_tables() {
 
 	// Set offboard values for move generation
 	for (int i = 0; i < 120; i++)
-		sq120_to_64[i] = OFFBOARD;
+		sq120_to_64[i] = SQ_NONE;
 
 	File file;
 	Rank rank;
@@ -414,7 +414,7 @@ void Position::undo_castling(Move m) {
 // Position::piece_at() returns the piece on the specified square
 Piece Position::piece_at(Square s) {
 
-	return square_on_board(s) ? board[s] : NO_PIECE;
+	return board[s];
 }
 
 // Position::remove_piece() Removes a piece in the 120 based board array and piece list

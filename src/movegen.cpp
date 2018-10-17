@@ -134,46 +134,35 @@ MoveList generate_pseudo_legal_moves(Position& pos) {
 	}
 
 	// Loop from white/black Knight to white/black King and generate moves for each
-	for (int i = create_piece(our_side, KNIGHT); i <= create_piece(our_side, KING); i++) {
+	for (PieceType ptype = KNIGHT; ptype <= KING; ptype++) {
 
 		// Set our piece based on our side
-		Piece piece = create_piece(our_side, type_of(i));
-		PieceType ptype = type_of(piece);
+		Piece piece = create_piece(our_side, ptype);
 		Piece attacked = NO_PIECE;
-		Square from_square = SQ_NONE, to_square = SQ_NONE;
 
 		// Loop through each piece in the list
 		for (int j = 0; j < pos.piece_num[piece]; j++) {
 
-			from_square = pos.piece_list[piece][j]; // get the piece's starting square
-			int offset_num = 0;
-			int direction;
+			Square from_square = pos.piece_list[piece][j]; // get the piece's starting square
 
 			// Loop through each offset direction
-			while (offset[ptype][offset_num] && offset_num < 8) {
-
-				direction = offset[ptype][offset_num];
-				to_square = from_square + direction;
+			for (int direction, offset_num = 0; offset_num < 8 && (direction = offset[ptype][offset_num]); offset_num++) {
 
 				// Add each step to the offset direction and make move if applicable
-				while (true) {
+				for (Square to_square = from_square + direction; square_on_board(to_square); to_square += direction) {
 					attacked = pos.piece_at(to_square);
 
-					if (!square_on_board(to_square)) break; // we can't go here if it's off the board
 					if (type_of(attacked) != NO_PIECE_TYPE && color_of(attacked) == our_side) break; // cannot capture our own color piece
 					add_move(pos, list, from_square, to_square); // Add the move
 					if (!slider[ptype]) break; // if this piece can't slide, stop going outwards
 					if (type_of(attacked) != NO_PIECE_TYPE) break; // we've captured a piece, we can't go further
-					to_square += direction;
 				}
-				offset_num++;
 			}
 		}
 	}
 
-	Square king_square = SQ_NONE;
 	Piece our_king = create_piece(our_side, KING);
-	king_square = pos.piece_list[our_king][0];
+	Square king_square = pos.piece_list[our_king][0];
 
 	// If we are not in check currently
 	if (!square_attacked(pos, king_square, !our_side)) {

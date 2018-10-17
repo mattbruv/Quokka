@@ -32,7 +32,6 @@ enum {
 	A7 = 81, B7, C7, D7, E7, F7, G7, H7,
 	A8 = 91, B8, C8, D8, E8, F8, G8, H8,
 
-	OFFBOARD = 99,
 	SQ_NONE = -1,
 
 	DELTA_N = 10,
