@@ -64,7 +64,7 @@ inline Square FR2SQ(File f, Rank r) {
 
 // Converts a 120 based square to a 64 based square index
 inline Square to64(Square s) {
-	return sq120_to_64[s];
+	return s < 0 || s >= 120 ? OFFBOARD : sq120_to_64[s];
 }
 
 // Converts a 64 based square to a 120 based square index

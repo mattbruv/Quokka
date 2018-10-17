@@ -44,11 +44,11 @@ string coord(Square s) {
 
 	ostringstream oss;
 	char file;
-	int rank;
+	char rank;
 
 	s = to64(s);
-	file = (char) file_of(s) + 97;
-	rank = rank_of(s) + 1;
+	file = 'a' + file_of(s);
+	rank = '1' + rank_of(s);
 	oss << file << rank;
 	return oss.str();
 }
@@ -413,7 +413,8 @@ void Position::undo_castling(Move m) {
 
 // Position::piece_at() returns the piece on the specified square
 Piece Position::piece_at(Square s) {
-	return board[s];
+
+	return square_on_board(s) ? board[s] : NO_PIECE;
 }
 
 // Position::remove_piece() Removes a piece in the 120 based board array and piece list
