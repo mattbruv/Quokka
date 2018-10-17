@@ -8,6 +8,7 @@
 #include "position.h"
 #include "movegen.h"
 #include "attack.h"
+#include "evaluate.h" // value_of
 
 using namespace std;
 
@@ -26,46 +27,6 @@ PieceType piece_type[13] = {
 Key piece_keys[13][120];
 Key side_key;
 Key castle_keys[16];
-
-// Takes a file and rank and returns their 120 based square index
-inline Square FR2SQ(File f, Rank r) {
-	return ((f + 21) + (r * 10));
-}
-
-// Converts a 120 based square to a 64 based square index
-inline Square to64(Square s) {
-	return sq120_to_64[s];
-}
-
-// Converts a 64 based square to a 120 based square index
-inline Square to120(Square s) {
-	return sq64_to_120[s];
-}
-
-// Convert a 64 based square to a file
-inline File file_of(Square s) {
-	return s & 7;
-}
-
-// Convert a 64 based square to a rank
-inline Rank rank_of(Square s) {
-	return s >> 3;
-}
-
-// Get the color of a piece
-inline Color color_of(Piece p) {
-	return (p <= W_KING) ? WHITE : BLACK;
-}
-
-// Get the type of a piece
-inline PieceType type_of(Piece p) {
-	return piece_type[p];
-}
-
-// Set a bit to zero (for disabling castling perms)
-inline void clear_bit(Byte& i, int bit) {
-	i &= ~(bit);
-}
 
 // Helper function to create a move
 Move create_move(Square from, Square to, Piece promotion, bool castle, int score) {

@@ -265,7 +265,3 @@ void print_move_list(MoveList& list) {
 	}
 	cout << endl;
 }
-
-inline Piece create_piece(int side, int ptype) {
-	return (6 * side + ptype);
-}
