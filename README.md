@@ -1,6 +1,6 @@
 ## Quokka
 
-Quokka is a hobby UCI chess eninge that I developed in C++ from scratch during the winter of 2014.
+Quokka is a hobby UCI chess engine that I developed in C++ from scratch during the winter of 2014.
 
 It plays at an [elo](https://en.wikipedia.org/wiki/Elo_rating_system) rating of approximately 1800.
 
