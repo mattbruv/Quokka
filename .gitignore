@@ -1,2 +1,4 @@
+obj/
+*.exe
 quokka
-*.swp
+.vscode

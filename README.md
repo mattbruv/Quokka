@@ -2,7 +2,7 @@
 
 Quokka is a hobby UCI chess engine that I developed in C++ from scratch during the winter of 2014.
 
-It plays at an [elo](https://en.wikipedia.org/wiki/Elo_rating_system) rating of approximately 1800.
+It plays at an [Elo](https://en.wikipedia.org/wiki/Elo_rating_system) rating of approximately 1800.
 
 ## Play it live right now!
 You can play against Quokka right now, without having to download anything!

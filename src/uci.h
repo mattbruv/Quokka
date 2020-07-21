@@ -16,11 +16,11 @@ namespace UCI {
 	void loop();
 }
 
-void debug(Position& pos);
-void do_perft(Position& pos, istringstream& iss);
-void position(Position& pos, istringstream& iss);
-void go(Position& pos, SearchInfo info, istringstream& iss);
-void make_move(Position& pos, istringstream& iss);
+void debug();
+void do_perft(istringstream& iss);
+void position(istringstream& iss);
+void go(istringstream& iss);
+void make_move(istringstream& iss);
 int get_time();
 
 

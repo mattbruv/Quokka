@@ -3,22 +3,42 @@
 #include <sstream>
 #include <string>
 #include <ctime>
+#include <thread>
 
 #include "uci.h"
 
 // FEN string of the initial position
 const string start_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
+/*
+	Had to do quite a bit to enable this program to run with threads.
+	Had to make the position, info, and thread itself have global scope
+	Had to make it so any change of the position or info object would first end the search
+	Now the program input doens't get blocked during a search.
+	It's not beautiful code, but it got the job done.
+	It feels like polishing a turd at this point, 6 years later,
+	but I want to make the engine work better on lichess
+	and not crash or burn time too much.
+*/
+std::thread searchThread;
+Position pos;
+SearchInfo info = {};
+
+void stopSearch() {
+	// set search to stopped and join the thread.
+	info.stopped = true;
+	if (searchThread.joinable()) {
+		searchThread.join();
+	}
+}
+
 void UCI::loop() {
 
-	Position pos(start_FEN);
-	SearchInfo info = {};
-
 	string command, token;
+	pos.parse_fen(start_FEN);
 
 	// Main UCI loop
 	while (true) {
-
 		if (!getline(cin, command)) // wait for user input
 			command = "quit";
 
@@ -27,6 +47,7 @@ void UCI::loop() {
 		iss >> skipws >> token;
 
 		if (token == "quit") {
+			stopSearch();
 			break;
 		}
 		else if (token == "uci") {
@@ -34,31 +55,43 @@ void UCI::loop() {
 			cout << "id author " << AUTHOR << endl;
 			cout << "uciok" << endl;
 		}
-		else if (token == "ucinewgame") pos.parse_fen(start_FEN);
-		else if (token == "go")         go(pos, info, iss);
-		else if (token == "position")   position(pos, iss);
+		else if (token == "ucinewgame") {
+			stopSearch();
+			pos.parse_fen(start_FEN);
+		}
+		else if (token == "go")         go(iss);
+		else if (token == "position")   position(iss);
 		else if (token == "setoption")  {}
+		else if (token == "stop")       stopSearch();
 		else if (token == "isready")    cout << "readyok" << endl;
-		else if (token == "p")          debug(pos);
-		else if (token == "m")          make_move(pos, iss);
-		else if (token == "u")          pos.undo_move();
-		else if (token == "set")        pos.parse_fen("rnbqkb1r/ppp2ppp/4p3/3p2P1/3P4/4PN2/PPP2PP1/RN1QKB1R b KQkq - 0 6");
-		else if (token == "perft")      do_perft(pos, iss);
+		else if (token == "p")          debug();
+		else if (token == "m")          make_move(iss);
+		else if (token == "u") {
+			stopSearch();
+			pos.undo_move();
+		}
+		else if (token == "set") {
+			stopSearch();
+			pos.parse_fen("rnbqkb1r/ppp2ppp/4p3/3p2P1/3P4/4PN2/PPP2PP1/RN1QKB1R b KQkq - 0 6");
+		}
+		else if (token == "perft")      do_perft(iss);
 		else
 			cout << "Unknown command: " << command << endl;
 	}
 }
 
 // Make a move
-void make_move(Position& pos, istringstream& iss) {
+void make_move(istringstream& iss) {
+	stopSearch();
 	string token;
 	iss >> token;
 
 	parse_UCI_move(pos, token);
-	debug(pos);
+	debug();
 }
 
-void debug(Position& pos) {
+void debug() {
+	stopSearch();
 	MoveList mlist = {};
 	generate_moves(pos, mlist);
 	pos.print_board();
@@ -68,7 +101,8 @@ void debug(Position& pos) {
 	cout << "key: " << uppercase << hex << pos.history_stack[pos.game_ply].id << dec << endl;
 }
 
-void do_perft(Position& pos, istringstream& iss) {
+void do_perft(istringstream& iss) {
+	stopSearch();
 	string token;
 	iss >> token;
 
@@ -81,7 +115,9 @@ void do_perft(Position& pos, istringstream& iss) {
 // The function sets up the position described in the given fen string ("fen")
 // or the starting position ("startpos") and then makes the moves given in the
 // following move list ("moves").
-void position(Position& pos, istringstream& iss) {
+void position(istringstream& iss) {
+
+	stopSearch();
 
 	string token, fen;
 
@@ -113,8 +149,10 @@ void setoption(istringstream& iss) {}
 
 // go() is called when engine receives the "go" UCI command. The function sets
 // the thinking time and other parameters from the input string, and starts the search.
-void go(Position& pos, SearchInfo info, istringstream& iss) {
-	
+void go(istringstream& iss) {
+
+	stopSearch();
+
 	string token;
 
 	int depth = MAX_DEPTH, movestogo = 30, movetime = -1;
@@ -137,6 +175,7 @@ void go(Position& pos, SearchInfo info, istringstream& iss) {
 
 	info.start_time = get_time();
 	info.depth = depth;
+	info.stopped = false;
 
 	if (time != -1) {
 		time /= movestogo;
@@ -149,8 +188,10 @@ void go(Position& pos, SearchInfo info, istringstream& iss) {
 	//cout << "Searching for " << info.stop_time - info.start_time << " seconds." << endl;
 	
 	//int start_time = get_time();
-	search_position(pos, info);
+	// search_position(pos, info);
+	searchThread = std::thread(search_position, std::ref(pos), std::ref(info));
 	//int end_time = get_time();
+	// if the thread goes out of scope and not joined it will crash
 
 	//cout << "finished in " << (end_time - start_time) << " milliseconds" << endl;
 }
