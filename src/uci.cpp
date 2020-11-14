@@ -51,7 +51,7 @@ void UCI::loop() {
 			break;
 		}
 		else if (token == "uci") {
-			cout << "id " << NAME << endl;
+			cout << "id name " << NAME << endl;
 			cout << "id author " << AUTHOR << endl;
 			cout << "uciok" << endl;
 		}
