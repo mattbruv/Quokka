@@ -6,10 +6,10 @@ LDFLAGS :=
 CXXFLAGS := -Wall -std=c++11
 
 quokka: $(OBJ_FILES)
-	   g++ -O2 -o $@ $^
+	   g++ -O2 -o $@ $^ -lpthread
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	   g++ -O2 $(CXXFLAGS) -c $< -o $@
+	   g++ -O2 $(CXXFLAGS) -c $< -o $@ -lpthread
 
 clean:
 	rm -f obj/*.o
