@@ -9,6 +9,7 @@ quokka: $(OBJ_FILES)
 	   g++ -O2 -o $@ $^ -lpthread
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	   mkdir -p $(dir $@)
 	   g++ -O2 $(CXXFLAGS) -c $< -o $@ -lpthread
 
 clean:
