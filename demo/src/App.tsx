@@ -10,6 +10,8 @@ import "./css/chessground.brown.css";
 import "./css/chessground.cburnett.css";
 
 import type { Api } from "@lichess-org/chessground/api";
+import { Chess } from "chess.js";
+import { aiPlay, playOtherSide, toDests } from "./util.js";
 
 function App() {
   const [output, setOutput] = useState<string[]>([]);
@@ -19,6 +21,8 @@ function App() {
   const [depth, setDepth] = useState<number>(5);
   const [ground, setGround] = useState<Api | null>(null);
 
+  const chess = new Chess();
+
   const groundRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -27,10 +31,23 @@ function App() {
         Chessground(groundRef.current, {
           movable: {
             free: false, // only allow legal moves
-            color: "white", // white pieces can move
+            color: "both", // white pieces can move
+            dests: toDests(chess),
+          },
+          draggable: {
+            showGhost: true,
           },
           events: {
             move(orig, dest, capturedPiece) {
+              chess.move({ from: orig, to: dest });
+              console.log(chess);
+              ground?.set({
+                movable: {
+                  free: true,
+                  color: "both",
+                  dests: toDests(chess),
+                },
+              });
               console.log(orig, dest, capturedPiece);
             },
           },

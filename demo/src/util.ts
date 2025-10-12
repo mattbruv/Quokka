@@ -38,6 +38,7 @@ export function aiPlay(
   delay: number,
   firstMove: boolean
 ) {
+  console.log("FCK");
   return (orig: string, dest: string) => {
     chess.move({ from: orig, to: dest });
     setTimeout(() => {
