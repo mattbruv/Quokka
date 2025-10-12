@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 //@ts-expect-error no types
 import createQuokka from "./quokka.js";
-import { Button } from "@chakra-ui/react";
+import { Button, HStack, Input } from "@chakra-ui/react";
 
 function App() {
   // Hi mom
@@ -23,11 +23,17 @@ function App() {
   return (
     <>
       <div>
-        <h1>hi Quokka</h1>
+        <Input
+          onChange={(x) => setFen(x.target.value)}
+          value={fen}
+          placeholder="Enter position FEN"
+        />
         <Button onClick={calculate}>Calculate</Button>
-        {output.map((x) => (
-          <div key={x}>{x}</div>
-        ))}
+        {output
+          .filter((x) => x.includes("bestmove"))
+          .map((x) => (
+            <div key={x}>{x}</div>
+          ))}
       </div>
     </>
   );
