@@ -8,9 +8,8 @@ function App() {
   useEffect(() => {
     createQuokka().then((module: any) => {
       console.log(module);
-      const int_sqrt = module.cwrap("int_sqrt", "number", ["number"]);
-      console.log(int_sqrt(120));
-      int_sqrt(28);
+      const int_sqrt = module.cwrap("int_sqrt", "string", ["number"]);
+      console.log(int_sqrt(2));
     });
   }, []);
 
