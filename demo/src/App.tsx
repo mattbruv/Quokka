@@ -1,7 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 //@ts-expect-error no types
 import createQuokka from "./quokka.js";
-import { Button, Input, NumberInput, Stack } from "@chakra-ui/react";
+import {
+  Button,
+  HStack,
+  Input,
+  NumberInput,
+  Stack,
+  Textarea,
+} from "@chakra-ui/react";
 
 import { Chessground } from "@lichess-org/chessground";
 
@@ -20,6 +27,7 @@ function App() {
   );
   const [depth, setDepth] = useState<number>(5);
   const [ground, setGround] = useState<Api | null>(null);
+  const [pgn, setPgn] = useState("");
 
   const chess = new Chess();
 
@@ -45,7 +53,7 @@ function App() {
       ground.set({
         movable: {
           events: {
-            after: aiPlay(ground, chess, calculate, false),
+            after: aiPlay(ground, chess, calculate, setPgn, false),
           },
         },
       });
@@ -66,31 +74,36 @@ function App() {
 
   return (
     <>
-      <Stack>
-        <div style={{ width: 400, height: 400 }} ref={groundRef}></div>
-        <div>
-          <Input
-            onChange={(x) => setFen(x.target.value)}
-            value={fen}
-            placeholder="Enter position FEN"
-          />
-          <NumberInput.Root
-            value={depth.toString()}
-            onValueChange={(e) => setDepth(Number(e.value))}
-            defaultValue="3"
-            width="200px"
-          >
-            <NumberInput.Control />
-            <NumberInput.Input />
-          </NumberInput.Root>
-          <Button onClick={() => calculate(fen)}>Calculate</Button>
-          {output
-            // .filter((x) => x.includes("bestmove"))
-            .map((x) => (
-              <div key={x}>{x}</div>
-            ))}
-        </div>
-      </Stack>
+      <HStack>
+        <div style={{ width: 500, height: 500 }} ref={groundRef}></div>
+        <Stack>
+          <div>
+            <Input
+              onChange={(x) => setFen(x.target.value)}
+              value={fen}
+              placeholder="Enter position FEN"
+            />
+            <NumberInput.Root
+              value={depth.toString()}
+              onValueChange={(e) => setDepth(Number(e.value))}
+              defaultValue="3"
+              width="200px"
+            >
+              <NumberInput.Control />
+              <NumberInput.Input />
+            </NumberInput.Root>
+            <Button onClick={() => calculate(fen)}>Calculate</Button>
+            {output
+              // .filter((x) => x.includes("bestmove"))
+              .map((x) => (
+                <div key={x}>{x}</div>
+              ))}
+          </div>
+          <div>
+            <pre style={{ overflow: "scroll" }}>{pgn}</pre>
+          </div>
+        </Stack>
+      </HStack>
     </>
   );
 }
