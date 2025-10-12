@@ -35,17 +35,25 @@ export function playOtherSide(cg: Api, chess: Chess) {
 export function aiPlay(
   cg: Api,
   chess: Chess,
-  delay: number,
+  calculate: (gameFen: string) => Promise<string[]>,
   firstMove: boolean
 ) {
   return (orig: string, dest: string) => {
-    chess.move({ from: orig, to: dest });
-    setTimeout(() => {
+    setTimeout(async () => {
+      chess.move({ from: orig, to: dest });
+      // get quokka output
+      const output = await calculate(chess.fen());
+      const best = output.find((x) => x.includes("bestmove"))?.split(" ")[1];
+      console.log(best);
+
       const moves = chess.moves({ verbose: true });
-      console.log(moves);
-      const move = firstMove
-        ? moves[0]
-        : moves[Math.floor(Math.random() * moves.length)];
+      const move = moves.find((x) => x.lan === best)!;
+      console.log(move);
+      // const move = moves.find()
+      // console.log(moves);
+      // const move = firstMove
+      //   ? moves[0]
+      //   : moves[Math.floor(Math.random() * moves.length)];
       chess.move(move.san);
       cg.move(move.from, move.to);
       cg.set({
@@ -56,6 +64,6 @@ export function aiPlay(
         },
       });
       cg.playPremove();
-    }, delay);
+    }, 500);
   };
 }

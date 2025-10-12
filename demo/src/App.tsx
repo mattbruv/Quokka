@@ -45,7 +45,7 @@ function App() {
       ground.set({
         movable: {
           events: {
-            after: aiPlay(ground, chess, 1000, false),
+            after: aiPlay(ground, chess, calculate, false),
           },
         },
       });
@@ -54,12 +54,14 @@ function App() {
     }
   }, []);
 
-  async function calculate() {
+  async function calculate(gameFen: string): Promise<string[]> {
     const module = await createQuokka();
     // takes a depth and FEN, returns program output
     const int_sqrt = module.cwrap("int_sqrt", "string", ["number", "string"]);
-    const stdout: string = int_sqrt(depth, fen);
-    setOutput(stdout.split("\n"));
+    const stdout: string = int_sqrt(depth, gameFen);
+    const lines = stdout.split("\n");
+    setOutput(lines);
+    return lines;
   }
 
   return (
@@ -81,7 +83,7 @@ function App() {
             <NumberInput.Control />
             <NumberInput.Input />
           </NumberInput.Root>
-          <Button onClick={calculate}>Calculate</Button>
+          <Button onClick={() => calculate(fen)}>Calculate</Button>
           {output
             // .filter((x) => x.includes("bestmove"))
             .map((x) => (
