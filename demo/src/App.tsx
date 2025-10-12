@@ -83,10 +83,15 @@ function App() {
       >
         <Box
           flex={1}
-          style={{ padding: "3rem", width: "100%", aspectRatio: 1 }}
+          style={{
+            // backgroundColor: "red",
+            padding: "2rem",
+            width: "100%",
+            aspectRatio: 1,
+          }}
         >
           <div
-            style={{ width: "min(95%, 95vw)", aspectRatio: 1 }}
+            style={{ width: "min(100%, 100vw)", aspectRatio: 1 }}
             ref={groundRef}
           ></div>
         </Box>
