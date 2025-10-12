@@ -3,6 +3,14 @@
 #include "movegen.h"
 #include "uci.h"
 
+extern "C"
+{
+	int int_sqrt(int x)
+	{
+		return 42;
+	}
+}
+
 int main()
 {
 	cout << NAME << " by " << AUTHOR << endl;
