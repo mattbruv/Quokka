@@ -4,9 +4,11 @@ import createQuokka from "./quokka.js";
 import { Button, Input, NumberInput, Stack } from "@chakra-ui/react";
 
 import { Chessground } from "@lichess-org/chessground";
+
 import "@lichess-org/chessground/assets/chessground.base.css";
 import "@lichess-org/chessground/assets/chessground.brown.css";
 import "@lichess-org/chessground/assets/chessground.cburnett.css";
+
 import type { Api } from "@lichess-org/chessground/api";
 
 function App() {
@@ -23,12 +25,14 @@ function App() {
     if (groundRef.current) {
       setGround(
         Chessground(groundRef.current, {
-          orientation: "white", // white at bottom
-          // draggable: true, // pieces can be dragged
           movable: {
             free: false, // only allow legal moves
             color: "white", // white pieces can move
-            showDests: true, // highlight destinations
+          },
+          events: {
+            move(orig, dest, capturedPiece) {
+              console.log(orig, dest, capturedPiece);
+            },
           },
           fen,
         })
