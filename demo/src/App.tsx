@@ -75,12 +75,20 @@ function App() {
 
   return (
     <>
-      <Flex>
-        <Box flex={1} p={4}>
-          <div style={{ width: 500, height: 500 }} ref={groundRef}></div>
-          Left Column
+      <Flex
+        style={{ height: "100vh", width: "100vw", overflow: "hidden" }}
+        p={4}
+        gap={4}
+      >
+        <Box
+          flex={1}
+          style={{ padding: 10 }}
+          overflow={"hidden"}
+          borderRadius={"md"}
+        >
+          <div style={{ height: "100%", aspectRatio: 1 }} ref={groundRef}></div>
         </Box>
-        <Box flex={1} p={4}>
+        <Box flex={1}>
           <Stack>
             <div>
               <Input
