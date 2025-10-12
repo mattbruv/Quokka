@@ -8,6 +8,7 @@ extern "C"
 	const char *int_sqrt(int depth)
 	{
 		static Position pos;
+		pos.init();
 		pos.parse_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
 		SearchInfo info = {};

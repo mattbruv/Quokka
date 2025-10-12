@@ -20,8 +20,7 @@ Square sq64_to_120[120];
 PieceType piece_type[13] = {
 	NO_PIECE_TYPE,
 	PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING,
-	PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING
-};
+	PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING};
 
 // Position hash variables
 Key piece_keys[13][120];
@@ -29,7 +28,8 @@ Key side_key;
 Key castle_keys[16];
 
 // Helper function to create a move
-Move create_move(Square from, Square to, Piece promotion, bool castle, int score) {
+Move create_move(Square from, Square to, Piece promotion, bool castle, int score)
+{
 	Move m;
 	m.from = from;
 	m.to = to;
@@ -40,7 +40,8 @@ Move create_move(Square from, Square to, Piece promotion, bool castle, int score
 }
 
 // Convert a 120 based square to it's algebraic notation
-string coord(Square s) {
+string coord(Square s)
+{
 
 	ostringstream oss;
 	char file;
@@ -54,7 +55,8 @@ string coord(Square s) {
 }
 
 // Convert a move into readable text
-string print_move(Move m) {
+string print_move(Move m)
+{
 	ostringstream oss;
 	oss << coord(m.from) << coord(m.to);
 	if (m.promotion != NO_PIECE)
@@ -63,8 +65,9 @@ string print_move(Move m) {
 }
 
 // Convert a move string into the move
-void parse_UCI_move(Position& pos, string& str) {
-	
+void parse_UCI_move(Position &pos, string &str)
+{
+
 	MoveList mlist = {};
 
 	if (str.length() == 5)
@@ -74,16 +77,18 @@ void parse_UCI_move(Position& pos, string& str) {
 
 	int index = move_in_list(str, mlist);
 
-	if (index != -1) {
+	if (index != -1)
+	{
 		pos.make_move(mlist.moves[index]);
 	}
 }
 
 // rand64() returns a random 64 bit integer used for hashing the board position
-inline Key rand64() {
-	Key r30 = RAND_MAX*rand()+rand();
-	Key s30 = RAND_MAX*rand()+rand();
-	Key t4  = rand() & 0xf;
+inline Key rand64()
+{
+	Key r30 = RAND_MAX * rand() + rand();
+	Key s30 = RAND_MAX * rand() + rand();
+	Key t4 = rand() & 0xf;
 
 	Key res = (r30 << 34) + (s30 << 4) + t4;
 
@@ -91,20 +96,25 @@ inline Key rand64() {
 }
 
 // Initialize the hash key array
-void init_hash_keys() {
-	for (int i = 0; i < 13; i++) {
-		for (int j = 0; j < 120; j++) {
+void init_hash_keys()
+{
+	for (int i = 0; i < 13; i++)
+	{
+		for (int j = 0; j < 120; j++)
+		{
 			piece_keys[i][j] = rand64();
 		}
 	}
 	side_key = rand64();
-	for (int i = 0; i < 16; i++) {
+	for (int i = 0; i < 16; i++)
+	{
 		castle_keys[i] = rand64();
 	}
 }
 
 // Initializes the lookup tables for converting 120 based squares to their 64 based counterparts and vice versa
-void init_lookup_tables() {
+void init_lookup_tables()
+{
 
 	// Set offboard values for move generation
 	for (int i = 0; i < 120; i++)
@@ -115,8 +125,10 @@ void init_lookup_tables() {
 	Square sq120, sq64 = 0;
 
 	// Insert lookup values
-	for (rank = RANK_1; rank <= RANK_8; rank++) {
-		for (file = FILE_A; file <= FILE_H; file++) {
+	for (rank = RANK_1; rank <= RANK_8; rank++)
+	{
+		for (file = FILE_A; file <= FILE_H; file++)
+		{
 			sq120 = FR2SQ(file, rank);
 			sq64_to_120[sq64] = sq120;
 			sq120_to_64[sq120] = sq64;
@@ -127,30 +139,35 @@ void init_lookup_tables() {
 
 // Position::init() is a function which initializes all necessary helper data
 // which is required for use by a position object
-void Position::init() {
+void Position::init()
+{
 	init_lookup_tables();
 	init_hash_keys();
 }
 
 // Default constructor
-Position::Position() {
+Position::Position()
+{
 	clear();
 }
 
 // Overloaded constructor
-Position::Position(const string fen) {
+Position::Position(const string fen)
+{
 	clear();
 	parse_fen(fen);
 }
 
 // Clear the position object and set everything to default data
-void Position::clear() {
+void Position::clear()
+{
 	memset(this, 0, sizeof(Position));
 	en_passant_target = SQ_NONE;
 }
 
 // Position::parse_fen() parses a Forsyth-Edwards Notation string to be used on the internal game board
-void Position::parse_fen(const string& fen) {
+void Position::parse_fen(const string &fen)
+{
 
 	char col, row, token;
 	size_t p;
@@ -186,10 +203,18 @@ void Position::parse_fen(const string& fen) {
 	{
 		switch (token)
 		{
-			case 'K': castling_perms |= WKCA; break;
-			case 'Q': castling_perms |= WQCA; break;
-			case 'k': castling_perms |= BKCA; break;
-			case 'q': castling_perms |= BQCA; break;
+		case 'K':
+			castling_perms |= WKCA;
+			break;
+		case 'Q':
+			castling_perms |= WQCA;
+			break;
+		case 'k':
+			castling_perms |= BKCA;
+			break;
+		case 'q':
+			castling_perms |= BQCA;
+			break;
 		}
 	}
 
@@ -207,7 +232,8 @@ void Position::parse_fen(const string& fen) {
 }
 
 // Position::make_move() moves a piece while keeping piece lists in sync.
-void Position::make_move(Move m, bool save) {
+void Position::make_move(Move m, bool save)
+{
 
 	Piece p = piece_at(m.from);
 	Piece attacked = piece_at(m.to);
@@ -230,7 +256,8 @@ void Position::make_move(Move m, bool save) {
 	add_piece(m.to, p);
 
 	// Save the position state to the history and then change any positional values
-	if (save) {
+	if (save)
+	{
 		handle_en_passant(p, m);
 		parse_castling(p, m);
 
@@ -256,7 +283,8 @@ void Position::make_move(Move m, bool save) {
 }
 
 // Position::undo_move() takes back the last move in the position object based on the move list
-void Position::undo_move() {
+void Position::undo_move()
+{
 
 	assert(game_ply > 0);
 
@@ -284,11 +312,14 @@ void Position::undo_move() {
 	add_piece(m.from, p);
 
 	// Undo en passant
-	if (type_of(p) == PAWN && m.to == en_passant_target) {
-		if (to_move == WHITE) {
+	if (type_of(p) == PAWN && m.to == en_passant_target)
+	{
+		if (to_move == WHITE)
+		{
 			add_piece(m.to + DELTA_S, B_PAWN);
 		}
-		else {
+		else
+		{
 			add_piece(m.to + DELTA_N, W_PAWN);
 		}
 	}
@@ -300,25 +331,46 @@ void Position::undo_move() {
 }
 
 // Position::parse_castling() forbids castling if the rooks or king move or if the rook is captured
-void Position::parse_castling(Piece p, Move m) {
+void Position::parse_castling(Piece p, Move m)
+{
 
 	PieceType moved = type_of(p);
 
-	if (type_of(m.captured) == ROOK) {
-		switch (m.to) {
-			case H8: clear_bit(castling_perms, BKCA); break;
-			case A8: clear_bit(castling_perms, BQCA); break;
-			case H1: clear_bit(castling_perms, WKCA); break;
-			case A1: clear_bit(castling_perms, WQCA); break;
+	if (type_of(m.captured) == ROOK)
+	{
+		switch (m.to)
+		{
+		case H8:
+			clear_bit(castling_perms, BKCA);
+			break;
+		case A8:
+			clear_bit(castling_perms, BQCA);
+			break;
+		case H1:
+			clear_bit(castling_perms, WKCA);
+			break;
+		case A1:
+			clear_bit(castling_perms, WQCA);
+			break;
 		}
 	}
-	
-	if (moved == ROOK) {
-		switch (m.from) {
-			case A8: clear_bit(castling_perms, BQCA); break;
-			case H8: clear_bit(castling_perms, BKCA); break;
-			case A1: clear_bit(castling_perms, WQCA); break;
-			case H1: clear_bit(castling_perms, WKCA); break;
+
+	if (moved == ROOK)
+	{
+		switch (m.from)
+		{
+		case A8:
+			clear_bit(castling_perms, BQCA);
+			break;
+		case H8:
+			clear_bit(castling_perms, BKCA);
+			break;
+		case A1:
+			clear_bit(castling_perms, WQCA);
+			break;
+		case H1:
+			clear_bit(castling_perms, WKCA);
+			break;
 		}
 	}
 
@@ -326,8 +378,10 @@ void Position::parse_castling(Piece p, Move m) {
 	if (!castling_perms || (moved != ROOK && moved != KING))
 		return;
 
-	if (to_move == WHITE) {
-		if (m.from == E1) {
+	if (to_move == WHITE)
+	{
+		if (m.from == E1)
+		{
 			clear_bit(castling_perms, WKCA);
 			clear_bit(castling_perms, WQCA);
 		}
@@ -336,8 +390,10 @@ void Position::parse_castling(Piece p, Move m) {
 		if (m.from == H1 && (castling_perms & WKCA))
 			clear_bit(castling_perms, WKCA);
 	}
-	else {
-		if (m.from == E8) {
+	else
+	{
+		if (m.from == E8)
+		{
 			clear_bit(castling_perms, BKCA);
 			clear_bit(castling_perms, BQCA);
 		}
@@ -349,15 +405,18 @@ void Position::parse_castling(Piece p, Move m) {
 }
 
 // Position::handle_en_passant() writes the en-passant square if applicable
-void Position::handle_en_passant(Piece p, Move m) {
-	
-	if (type_of(p) != PAWN) {
+void Position::handle_en_passant(Piece p, Move m)
+{
+
+	if (type_of(p) != PAWN)
+	{
 		en_passant_target = SQ_NONE;
 		return;
 	}
 
 	// If the move is capturing our target, capture the target pawn
-	if (m.to == en_passant_target) {
+	if (m.to == en_passant_target)
+	{
 		if (to_move == WHITE)
 			remove_piece(m.to + DELTA_S, B_PAWN);
 		else
@@ -365,14 +424,16 @@ void Position::handle_en_passant(Piece p, Move m) {
 	}
 
 	// If the pawn moved from the 2nd rank to the 4th
-	if (to_move == WHITE) {
+	if (to_move == WHITE)
+	{
 		if (rank_of(to64(m.from)) == 1 && rank_of(to64(m.to)) == 3)
 			en_passant_target = m.from += DELTA_N;
 		else
 			en_passant_target = SQ_NONE;
 	}
 	// If the pawn moved from the 7th rank to the 5th
-	else {
+	else
+	{
 		if (rank_of(to64(m.from)) == 6 && rank_of(to64(m.to)) == 4)
 			en_passant_target = m.from += DELTA_S;
 		else
@@ -382,43 +443,73 @@ void Position::handle_en_passant(Piece p, Move m) {
 
 // Position::do_castling() performs the castling action.
 // This doesn't check if the move was valid, that is left up to the move generator
-void Position::do_castling(Move m) {
+void Position::do_castling(Move m)
+{
 
 	m.castle = false;
 
-	switch (m.to) {
-		case G1: m.from = H1; m.to = F1; break;
-		case C1: m.from = A1; m.to = D1; break;
-		case G8: m.from = H8; m.to = F8; break;
-		case C8: m.from = A8; m.to = D8; break;
+	switch (m.to)
+	{
+	case G1:
+		m.from = H1;
+		m.to = F1;
+		break;
+	case C1:
+		m.from = A1;
+		m.to = D1;
+		break;
+	case G8:
+		m.from = H8;
+		m.to = F8;
+		break;
+	case C8:
+		m.from = A8;
+		m.to = D8;
+		break;
 	}
-		
+
 	make_move(m, false);
 }
 
 // Position::undo_castling() reverses the castling action.
-void Position::undo_castling(Move m) {
+void Position::undo_castling(Move m)
+{
 
 	m.castle = false;
 
-	switch (m.to) {
-		case G1: m.from = F1; m.to = H1; break;
-		case C1: m.from = D1; m.to = A1; break;
-		case G8: m.from = F8; m.to = H8; break;
-		case C8: m.from = D8; m.to = A8; break;
+	switch (m.to)
+	{
+	case G1:
+		m.from = F1;
+		m.to = H1;
+		break;
+	case C1:
+		m.from = D1;
+		m.to = A1;
+		break;
+	case G8:
+		m.from = F8;
+		m.to = H8;
+		break;
+	case C8:
+		m.from = D8;
+		m.to = A8;
+		break;
 	}
 
 	make_move(m, false);
 }
 
 // Position::piece_at() returns the piece on the specified square
-Piece Position::piece_at(Square s) {
+Piece Position::piece_at(Square s)
+{
 
 	return board[s];
 }
 
 // Position::remove_piece() Removes a piece in the 120 based board array and piece list
-void Position::remove_piece(Square s, Piece p) {
+void Position::remove_piece(Square s, Piece p)
+{
 
 	int index = SQ_NONE;
 	board[s] = NO_PIECE;
@@ -426,7 +517,8 @@ void Position::remove_piece(Square s, Piece p) {
 	// loop through piece list and get index of the piece on from square
 	for (int i = 0; i < piece_num[p]; i++)
 	{
-		if (piece_list[p][i] == s) {
+		if (piece_list[p][i] == s)
+		{
 			index = i;
 			break;
 		}
@@ -447,11 +539,12 @@ void Position::remove_piece(Square s, Piece p) {
 }
 
 // Position::put_piece() Inserts a piece in the 120 based board array and piece list
-void Position::add_piece(Square s, Piece p) {
+void Position::add_piece(Square s, Piece p)
+{
 
 	board[s] = p;
 	piece_list[p][piece_num[p]++] = s;
-	
+
 	if (type_of(p) != KING)
 		material[color_of(p)] += value_of(type_of(p));
 
@@ -459,7 +552,8 @@ void Position::add_piece(Square s, Piece p) {
 }
 
 // Position::take_snapshot() saves the current state of the board to the history stack
-void Position::take_snapshot(Move m) {
+void Position::take_snapshot(Move m)
+{
 
 	Snapshot snap;
 
@@ -471,23 +565,27 @@ void Position::take_snapshot(Move m) {
 	// If we have no base position key, generate one, otherwise use the dynamically updated one
 	snap.id = (game_ply == 0) ? generate_position_key() : pos_key;
 
-	if (game_ply == 0) {
+	if (game_ply == 0)
+	{
 		pos_key = generate_position_key();
 	}
-	
+
 	snap.id = pos_key;
 
 	history_stack[game_ply++] = snap;
 }
 
 // Position::generate_position_key() generates a unique hash key for the position to check for repetition draws
-Key Position::generate_position_key() {
+Key Position::generate_position_key()
+{
 
 	Key poskey = 0;
 
 	// Add piece locations from piece list for each type and number of piece
-	for (int i = W_PAWN; i <= B_KING; i++) {
-		for (int j = 0; j < piece_num[i]; j++) {
+	for (int i = W_PAWN; i <= B_KING; i++)
+	{
+		for (int j = 0; j < piece_num[i]; j++)
+		{
 			poskey ^= piece_keys[i][j];
 		}
 	}
@@ -504,7 +602,8 @@ Key Position::generate_position_key() {
 }
 
 // Position::print_board() displays the internal board to the console in a pretty fashion
-void Position::print_board() {
+void Position::print_board()
+{
 
 	Square square = 0, dark = 0;
 	char piece;
@@ -532,11 +631,16 @@ void Position::print_board() {
 		cout << "en-passant square: " << coord(en_passant_target) << endl;
 
 	cout << "castling: ";
-	if (castling_perms & WKCA) cout << "K";
-	if (castling_perms & WQCA) cout << "Q";
-	if (castling_perms & BKCA) cout << "k";
-	if (castling_perms & BQCA) cout << "q";
-	if (!castling_perms) cout << "n/a";
+	if (castling_perms & WKCA)
+		cout << "K";
+	if (castling_perms & WQCA)
+		cout << "Q";
+	if (castling_perms & BKCA)
+		cout << "k";
+	if (castling_perms & BQCA)
+		cout << "q";
+	if (!castling_perms)
+		cout << "n/a";
 	cout << endl;
 
 	cout << "ply: " << game_ply << endl;
