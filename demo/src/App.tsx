@@ -8,8 +8,6 @@ import { Chessground } from "@lichess-org/chessground";
 import "@lichess-org/chessground/assets/chessground.base.css";
 import "./css/chessground.brown.css";
 import "./css/chessground.cburnett.css";
-// import "@lichess-org/chessground/assets/chessground.brown.css";
-// import "@lichess-org/chessground/assets/chessground.cburnett.css";
 
 import type { Api } from "@lichess-org/chessground/api";
 
