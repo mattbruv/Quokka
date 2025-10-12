@@ -1,14 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 //@ts-expect-error no types
 import createQuokka from "./quokka.js";
-import {
-  Button,
-  HStack,
-  Input,
-  NumberInput,
-  Stack,
-  Textarea,
-} from "@chakra-ui/react";
+import { Button, HStack, Input, NumberInput, Stack } from "@chakra-ui/react";
 
 import { Chessground } from "@lichess-org/chessground";
 
@@ -18,7 +11,7 @@ import "./css/chessground.cburnett.css";
 
 import type { Api } from "@lichess-org/chessground/api";
 import { Chess } from "chess.js";
-import { aiPlay, playOtherSide, toDests } from "./util.js";
+import { aiPlay, toDests } from "./util.js";
 
 function App() {
   const [output, setOutput] = useState<string[]>([]);
