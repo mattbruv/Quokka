@@ -4589,7 +4589,7 @@ var wasmMemory = makeInvalidEarlyAccess('wasmMemory');
 var wasmTable = makeInvalidEarlyAccess('wasmTable');
 
 function assignWasmExports(wasmExports) {
-  _int_sqrt = Module['_int_sqrt'] = createExportWrapper('int_sqrt', 1);
+  _int_sqrt = Module['_int_sqrt'] = createExportWrapper('int_sqrt', 2);
   _main = createExportWrapper('main', 2);
   _fflush = createExportWrapper('fflush', 1);
   _strerror = createExportWrapper('strerror', 1);

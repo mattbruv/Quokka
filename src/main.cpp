@@ -5,11 +5,11 @@
 
 extern "C"
 {
-	const char *int_sqrt(int depth)
+	const char *int_sqrt(int depth, const char *fen)
 	{
 		static Position pos;
 		pos.init();
-		pos.parse_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+		pos.parse_fen(fen);
 
 		SearchInfo info = {};
 		info.stopped = false;

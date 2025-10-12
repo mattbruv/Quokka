@@ -6,13 +6,17 @@ function App() {
   // Hi mom
 
   const [output, setOutput] = useState<string[]>([]);
+  const [fen, setFen] = useState<string>(
+    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+  );
 
   async function calculate() {
     const depth = 4;
     const module = await createQuokka();
     // takes a depth and FEN, returns program output
-    const int_sqrt = module.cwrap("int_sqrt", "string", ["number"]);
-    console.log(int_sqrt(depth));
+    const int_sqrt = module.cwrap("int_sqrt", "string", ["number", "string"]);
+    const stdout: string = int_sqrt(depth, fen);
+    setOutput(stdout.split("\n"));
   }
 
   return (
@@ -21,7 +25,7 @@ function App() {
         <h1>hi Quokka</h1>
         <button onClick={calculate}>calculate</button>
         {output.map((x) => (
-          <div>{x}</div>
+          <div key={x}>{x}</div>
         ))}
       </div>
     </>
