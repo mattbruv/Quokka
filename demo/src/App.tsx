@@ -1,7 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 //@ts-expect-error no types
 import createQuokka from "./quokka.js";
-import { Button, HStack, Input, NumberInput, Stack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  HStack,
+  Input,
+  NumberInput,
+  Stack,
+} from "@chakra-ui/react";
 
 import { Chessground } from "@lichess-org/chessground";
 
@@ -67,36 +75,41 @@ function App() {
 
   return (
     <>
-      <HStack>
-        <div style={{ width: 500, height: 500 }} ref={groundRef}></div>
-        <Stack>
-          <div>
-            <Input
-              onChange={(x) => setFen(x.target.value)}
-              value={fen}
-              placeholder="Enter position FEN"
-            />
-            <NumberInput.Root
-              value={depth.toString()}
-              onValueChange={(e) => setDepth(Number(e.value))}
-              defaultValue="3"
-              width="200px"
-            >
-              <NumberInput.Control />
-              <NumberInput.Input />
-            </NumberInput.Root>
-            <Button onClick={() => calculate(fen)}>Calculate</Button>
-            {output
-              // .filter((x) => x.includes("bestmove"))
-              .map((x) => (
-                <div key={x}>{x}</div>
-              ))}
-          </div>
-          <div>
-            <pre style={{ overflow: "scroll" }}>{pgn}</pre>
-          </div>
-        </Stack>
-      </HStack>
+      <Flex>
+        <Box flex={1} p={4}>
+          <div style={{ width: 500, height: 500 }} ref={groundRef}></div>
+          Left Column
+        </Box>
+        <Box flex={1} p={4}>
+          <Stack>
+            <div>
+              <Input
+                onChange={(x) => setFen(x.target.value)}
+                value={fen}
+                placeholder="Enter position FEN"
+              />
+              <NumberInput.Root
+                value={depth.toString()}
+                onValueChange={(e) => setDepth(Number(e.value))}
+                defaultValue="3"
+                width="200px"
+              >
+                <NumberInput.Control />
+                <NumberInput.Input />
+              </NumberInput.Root>
+              <Button onClick={() => calculate(fen)}>Calculate</Button>
+              {output
+                // .filter((x) => x.includes("bestmove"))
+                .map((x) => (
+                  <div key={x}>{x}</div>
+                ))}
+            </div>
+            <div>
+              <pre style={{ maxWidth: "50%", overflow: "scroll" }}>{pgn}</pre>
+            </div>
+          </Stack>
+        </Box>
+      </Flex>
     </>
   );
 }
