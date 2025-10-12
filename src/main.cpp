@@ -7,7 +7,9 @@ extern "C"
 {
 	const char *int_sqrt(int depth)
 	{
-		Position *pos = new Position("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+		static Position pos;
+		pos.parse_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+
 		SearchInfo info = {};
 		info.stopped = false;
 		info.depth = depth;
@@ -16,8 +18,8 @@ extern "C"
 		std::ostringstream oss;
 		auto old_buf = std::cout.rdbuf(oss.rdbuf()); // redirect cout to oss
 
-		// search_position(*pos, info);
-		std::cout << "redirected message";
+		search_position(pos, info);
+		std::cout << pos.generate_position_key();
 
 		std::cout.rdbuf(old_buf); // restore cout
 		output = oss.str();		  // store captured string
