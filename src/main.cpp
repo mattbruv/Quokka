@@ -15,12 +15,15 @@ extern "C"
 		info.stopped = false;
 		info.depth = depth;
 
+		// Since the original program just shits the evaluation to cout,
+		// we want to capture all of that and then return it after the search.
+		// this substitutes stdout into a buffer we have control of
 		static std::string output; // static to keep it alive after return
 		std::ostringstream oss;
 		auto old_buf = std::cout.rdbuf(oss.rdbuf()); // redirect cout to oss
 
 		search_position(pos, info);
-		std::cout << pos.generate_position_key();
+		// std::cout << pos.generate_position_key();
 
 		std::cout.rdbuf(old_buf); // restore cout
 		output = oss.str();		  // store captured string
