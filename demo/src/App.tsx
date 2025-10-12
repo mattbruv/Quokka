@@ -1,18 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 //@ts-expect-error no types
 import createQuokka from "./quokka.js";
-import { Button, HStack, Input } from "@chakra-ui/react";
+import { Button, Input, NumberInput } from "@chakra-ui/react";
 
 function App() {
-  // Hi mom
-
   const [output, setOutput] = useState<string[]>([]);
   const [fen, setFen] = useState<string>(
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
   );
+  const [depth, setDepth] = useState<number>(5);
 
   async function calculate() {
-    const depth = 4;
     const module = await createQuokka();
     // takes a depth and FEN, returns program output
     const int_sqrt = module.cwrap("int_sqrt", "string", ["number", "string"]);
@@ -28,9 +26,18 @@ function App() {
           value={fen}
           placeholder="Enter position FEN"
         />
+        <NumberInput.Root
+          value={depth.toString()}
+          onValueChange={(e) => setDepth(Number(e.value))}
+          defaultValue="3"
+          width="200px"
+        >
+          <NumberInput.Control />
+          <NumberInput.Input />
+        </NumberInput.Root>
         <Button onClick={calculate}>Calculate</Button>
         {output
-          .filter((x) => x.includes("bestmove"))
+          // .filter((x) => x.includes("bestmove"))
           .map((x) => (
             <div key={x}>{x}</div>
           ))}
