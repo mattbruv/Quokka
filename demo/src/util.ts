@@ -38,11 +38,11 @@ export function aiPlay(
   delay: number,
   firstMove: boolean
 ) {
-  console.log("FCK");
   return (orig: string, dest: string) => {
     chess.move({ from: orig, to: dest });
     setTimeout(() => {
       const moves = chess.moves({ verbose: true });
+      console.log(moves);
       const move = firstMove
         ? moves[0]
         : moves[Math.floor(Math.random() * moves.length)];

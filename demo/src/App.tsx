@@ -27,33 +27,30 @@ function App() {
 
   useEffect(() => {
     if (groundRef.current) {
-      setGround(
-        Chessground(groundRef.current, {
-          movable: {
-            free: false, // only allow legal moves
-            color: "both", // white pieces can move
-            dests: toDests(chess),
-          },
-          draggable: {
-            showGhost: true,
-          },
+      const ground = Chessground(groundRef.current, {
+        premovable: {
+          enabled: false,
+        },
+        movable: {
+          free: false, // only allow legal moves
+          color: "both", // white pieces can move
+          dests: toDests(chess),
+        },
+        draggable: {
+          showGhost: true,
+        },
+        fen,
+      });
+
+      ground.set({
+        movable: {
           events: {
-            move(orig, dest, capturedPiece) {
-              chess.move({ from: orig, to: dest });
-              console.log(chess);
-              ground?.set({
-                movable: {
-                  free: true,
-                  color: "both",
-                  dests: toDests(chess),
-                },
-              });
-              console.log(orig, dest, capturedPiece);
-            },
+            after: aiPlay(ground, chess, 1000, false),
           },
-          fen,
-        })
-      );
+        },
+      });
+
+      setGround(ground);
     }
   }, []);
 
