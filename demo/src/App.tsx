@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 //@ts-expect-error no types
 import createQuokka from "./quokka.js";
+import { Button } from "@chakra-ui/react";
 
 function App() {
   // Hi mom
@@ -23,7 +24,7 @@ function App() {
     <>
       <div>
         <h1>hi Quokka</h1>
-        <button onClick={calculate}>calculate</button>
+        <Button onClick={calculate}>Calculate</Button>
         {output.map((x) => (
           <div key={x}>{x}</div>
         ))}
