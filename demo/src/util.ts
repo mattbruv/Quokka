@@ -59,6 +59,7 @@ export function aiPlay(
       chess.move(move.san);
       cg.move(move.from, move.to);
       cg.set({
+        fen: chess.fen(),
         turnColor: toColor(chess),
         movable: {
           color: toColor(chess),

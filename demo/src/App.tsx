@@ -21,6 +21,8 @@ import type { Api } from "@lichess-org/chessground/api";
 import { Chess } from "chess.js";
 import { aiPlay, toDests } from "./util.js";
 
+let chess = new Chess();
+
 function App() {
   const [output, setOutput] = useState<string[]>([]);
   const [fen, setFen] = useState<string>(
@@ -29,8 +31,6 @@ function App() {
   const [depth, setDepth] = useState<number>(5);
   const [ground, setGround] = useState<Api | null>(null);
   const [pgn, setPgn] = useState("");
-
-  const chess = new Chess();
 
   const groundRef = useRef<HTMLDivElement>(null);
 
@@ -42,7 +42,7 @@ function App() {
         },
         movable: {
           free: false, // only allow legal moves
-          color: "both", // white pieces can move
+          color: "white", // white pieces can move
           dests: toDests(chess),
         },
         draggable: {
@@ -72,6 +72,11 @@ function App() {
     }
   }, []);
 
+  function reset() {
+    chess = new Chess();
+    ground?.set({ fen: chess.fen() });
+  }
+
   async function calculate(gameFen: string): Promise<string[]> {
     const module = await createQuokka();
     // takes a depth and FEN, returns program output
@@ -80,6 +85,10 @@ function App() {
     const lines = stdout.split("\n");
     setOutput(lines);
     return lines;
+  }
+
+  async function copyPgn(): Promise<void> {
+    await navigator.clipboard.writeText(pgn);
   }
 
   return (
@@ -108,11 +117,12 @@ function App() {
           <Stack>
             <div>
               <Input
+                disabled
                 onChange={(x) => setFen(x.target.value)}
                 value={fen}
                 placeholder="Enter position FEN"
               />
-              <NumberInput.Root
+              {/* <NumberInput.Root
                 value={depth.toString()}
                 onValueChange={(e) => setDepth(Number(e.value))}
                 defaultValue="3"
@@ -120,16 +130,13 @@ function App() {
               >
                 <NumberInput.Control />
                 <NumberInput.Input />
-              </NumberInput.Root>
-              <Button onClick={() => calculate(fen)}>Calculate</Button>
+              </NumberInput.Root> */}
+              <Button onClick={copyPgn}>Copy PGN</Button>
               {output
                 // .filter((x) => x.includes("bestmove"))
                 .map((x) => (
                   <div key={x}>{x}</div>
                 ))}
-            </div>
-            <div>
-              <pre style={{ maxWidth: "50%", overflow: "scroll" }}>{pgn}</pre>
             </div>
           </Stack>
         </Box>
