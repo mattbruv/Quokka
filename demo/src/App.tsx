@@ -31,8 +31,25 @@ function App() {
   const [depth, setDepth] = useState<number>(5);
   const [ground, setGround] = useState<Api | null>(null);
   const [pgn, setPgn] = useState("");
+  const [side, setSide] = useState<"white" | "black">("white");
 
   const groundRef = useRef<HTMLDivElement>(null);
+
+  function updateSide() {
+    setSide(side === "black" ? "white" : "black");
+    console.log(ground);
+    ground?.set({
+      movable: {
+        color: "black",
+        events: {
+          after: aiPlay(ground, chess, calculate, (fen, pgn) => {
+            setFen(fen);
+            setPgn(pgn);
+          }),
+        },
+      },
+    });
+  }
 
   useEffect(() => {
     if (groundRef.current) {
@@ -54,16 +71,10 @@ function App() {
       ground.set({
         movable: {
           events: {
-            after: aiPlay(
-              ground,
-              chess,
-              calculate,
-              (fen, pgn) => {
-                setFen(fen);
-                setPgn(pgn);
-              },
-              false
-            ),
+            after: aiPlay(ground, chess, calculate, (fen, pgn) => {
+              setFen(fen);
+              setPgn(pgn);
+            }),
           },
         },
       });
@@ -122,6 +133,7 @@ function App() {
                 value={fen}
                 placeholder="Enter position FEN"
               />
+              {/* <Button onClick={updateSide}>I play {side}</Button> */}
               {/* <NumberInput.Root
                 value={depth.toString()}
                 onValueChange={(e) => setDepth(Number(e.value))}

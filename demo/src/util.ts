@@ -36,8 +36,7 @@ export function aiPlay(
   cg: Api,
   chess: Chess,
   calculate: (gameFen: string) => Promise<string[]>,
-  setState: (fen: string, pgn: string) => void,
-  firstMove: boolean
+  setState: (fen: string, pgn: string) => void
 ) {
   return (orig: string, dest: string) => {
     setTimeout(async () => {
@@ -51,13 +50,10 @@ export function aiPlay(
       const moves = chess.moves({ verbose: true });
       const move = moves.find((x) => x.lan === best)!;
       console.log(move);
-      // const move = moves.find()
-      // console.log(moves);
-      // const move = firstMove
-      //   ? moves[0]
-      //   : moves[Math.floor(Math.random() * moves.length)];
+
       chess.move(move.san);
       cg.move(move.from, move.to);
+
       cg.set({
         fen: chess.fen(),
         turnColor: toColor(chess),
