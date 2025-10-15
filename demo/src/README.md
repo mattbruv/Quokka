@@ -1,6 +1,6 @@
 ```
 emcc ../../src/*.cpp \
-  -O0 \
+  -O3 \
   -g \
   -s WASM=1 \
   -s MODULARIZE=1 \
@@ -13,7 +13,8 @@ emcc ../../src/*.cpp \
   -s STACK_SIZE=8MB \
   -sEXPORTED_RUNTIME_METHODS=ccall,cwrap\
   -o quokka.js \
-  -s ASSERTIONS
+  -s ASSERTIONS \
+  -s ASYNCIFY
 ```
 
 https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#interacting-with-code-ccall-cwrap
