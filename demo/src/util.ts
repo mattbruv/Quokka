@@ -36,13 +36,13 @@ export function aiPlay(
   cg: Api,
   chess: Chess,
   calculate: (gameFen: string) => Promise<string[]>,
-  setPgn: React.Dispatch<React.SetStateAction<string>>,
+  setState: (fen: string, pgn: string) => void,
   firstMove: boolean
 ) {
   return (orig: string, dest: string) => {
     setTimeout(async () => {
       chess.move({ from: orig, to: dest });
-      setPgn(chess.pgn());
+      setState(chess.fen(), chess.pgn());
       // get quokka output
       const output = await calculate(chess.fen());
       const best = output.find((x) => x.includes("bestmove"))?.split(" ")[1];
@@ -67,8 +67,7 @@ export function aiPlay(
       });
       cg.playPremove();
 
-      const pgn = chess.pgn();
-      setPgn(pgn);
+      setState(chess.fen(), chess.pgn());
     }, 500);
   };
 }

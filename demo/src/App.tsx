@@ -54,7 +54,16 @@ function App() {
       ground.set({
         movable: {
           events: {
-            after: aiPlay(ground, chess, calculate, setPgn, false),
+            after: aiPlay(
+              ground,
+              chess,
+              calculate,
+              (fen, pgn) => {
+                setFen(fen);
+                setPgn(pgn);
+              },
+              false
+            ),
           },
         },
       });
