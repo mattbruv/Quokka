@@ -1,15 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 //@ts-expect-error no types
 import createQuokka from "./quokka.js";
-import {
-  Box,
-  Button,
-  Flex,
-  HStack,
-  Input,
-  NumberInput,
-  Stack,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, Input, Stack } from "@chakra-ui/react";
 
 import { Chessground } from "@lichess-org/chessground";
 
@@ -17,7 +9,7 @@ import "@lichess-org/chessground/assets/chessground.base.css";
 import "./css/chessground.brown.css";
 import "./css/chessground.cburnett.css";
 
-import type { Api } from "@lichess-org/chessground/api";
+// import type { Api } from "@lichess-org/chessground/api";
 import { Chess } from "chess.js";
 import { aiPlay, toDests } from "./util.js";
 
@@ -28,28 +20,28 @@ function App() {
   const [fen, setFen] = useState<string>(
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
   );
-  const [depth, setDepth] = useState<number>(5);
-  const [ground, setGround] = useState<Api | null>(null);
+  const [depth, _setDepth] = useState<number>(5);
+  //const [ground, setGround] = useState<Api | null>(null);
   const [pgn, setPgn] = useState("");
-  const [side, setSide] = useState<"white" | "black">("white");
+  // const [side, setSide] = useState<"white" | "black">("white");
 
   const groundRef = useRef<HTMLDivElement>(null);
 
-  function updateSide() {
-    setSide(side === "black" ? "white" : "black");
-    console.log(ground);
-    ground?.set({
-      movable: {
-        color: "black",
-        events: {
-          after: aiPlay(ground, chess, calculate, (fen, pgn) => {
-            setFen(fen);
-            setPgn(pgn);
-          }),
-        },
-      },
-    });
-  }
+  // function updateSide() {
+  //   setSide(side === "black" ? "white" : "black");
+  //   console.log(ground);
+  //   ground?.set({
+  //     movable: {
+  //       color: "black",
+  //       events: {
+  //         after: aiPlay(ground, chess, calculate, (fen, pgn) => {
+  //           setFen(fen);
+  //           setPgn(pgn);
+  //         }),
+  //       },
+  //     },
+  //   });
+  // }
 
   useEffect(() => {
     if (groundRef.current) {
@@ -78,15 +70,13 @@ function App() {
           },
         },
       });
-
-      setGround(ground);
     }
   }, []);
 
-  function reset() {
-    chess = new Chess();
-    ground?.set({ fen: chess.fen() });
-  }
+  // function reset() {
+  //   chess = new Chess();
+  //   ground?.set({ fen: chess.fen() });
+  // }
 
   async function calculate(gameFen: string): Promise<string[]> {
     const module = await createQuokka();
@@ -150,6 +140,10 @@ function App() {
                   <div key={x}>{x}</div>
                 ))}
             </div>
+            <p>
+              Refresh the page to start a new game. (todo: play as black, and
+              new game button)
+            </p>
           </Stack>
         </Box>
       </Flex>
