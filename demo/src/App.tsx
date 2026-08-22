@@ -7,6 +7,7 @@ import {
   Flex,
   Heading,
   HStack,
+  IconButton,
   Input,
   SegmentGroup,
   Separator,
@@ -15,6 +16,8 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+
+import { LuGithub } from "react-icons/lu";
 
 import { Chessground } from "@lichess-org/chessground";
 import type { Api } from "@lichess-org/chessground/api";
@@ -43,6 +46,8 @@ import {
   toMovePairs,
 } from "./util.ts";
 import type { PromotionSymbol } from "./util.ts";
+
+const REPO_URL = "https://github.com/mattbruv/Quokka";
 
 const MIN_DEPTH = 1;
 const MAX_DEPTH = 7;
@@ -123,7 +128,9 @@ function App() {
       const board = chessRef.current;
       const from = orig as Square;
       const to = dest as Square;
-      const legal = board.moves({ square: from, verbose: true }).filter((m) => m.to === to);
+      const legal = board
+        .moves({ square: from, verbose: true })
+        .filter((m) => m.to === to);
       if (!legal.length) return;
 
       if (legal.some((m) => m.promotion)) {
@@ -135,7 +142,7 @@ function App() {
       setError(null);
       bump();
     },
-    [bump]
+    [bump],
   );
 
   // Chessground is imperative, so it is created once and kept in a ref.
@@ -212,8 +219,14 @@ function App() {
 
         if (result.info) {
           const whiteScore =
-            searchFen.split(" ")[1] === "b" ? -result.info.score : result.info.score;
-          setAnalysis({ info: result.info, pv: pvToSan(searchFen, result.info.pv), whiteScore });
+            searchFen.split(" ")[1] === "b"
+              ? -result.info.score
+              : result.info.score;
+          setAnalysis({
+            info: result.info,
+            pv: pvToSan(searchFen, result.info.pv),
+            whiteScore,
+          });
         }
 
         const move = result.bestMove ? parseUci(result.bestMove) : null;
@@ -276,7 +289,11 @@ function App() {
 
   function choosePromotion(symbol: PromotionSymbol) {
     if (!promotion) return;
-    chessRef.current.move({ from: promotion.from, to: promotion.to, promotion: symbol });
+    chessRef.current.move({
+      from: promotion.from,
+      to: promotion.to,
+      promotion: symbol,
+    });
     setPromotion(null);
     setError(null);
     bump();
@@ -364,7 +381,11 @@ function App() {
 
         <HStack mt={3} justify="space-between" wrap="wrap" gap={2}>
           <HStack gap={2}>
-            <Badge colorPalette={status.over ? "purple" : turn === "white" ? "gray" : "blue"}>
+            <Badge
+              colorPalette={
+                status.over ? "purple" : turn === "white" ? "gray" : "blue"
+              }
+            >
               {status.label}
             </Badge>
             {thinking && (
@@ -396,10 +417,23 @@ function App() {
           <Box>
             <Heading size="lg">Quokka</Heading>
             <Text color="fg.muted" fontSize="sm">
-              A hobby UCI chess engine, compiled to WebAssembly.
+              A hobby chess engine made in C++ in 2014, compiled to WebAssembly.
             </Text>
           </Box>
-          <ColorModeButton />
+          <HStack gap={0}>
+            <IconButton
+              asChild
+              variant="ghost"
+              size="sm"
+              aria-label="View the source on GitHub"
+              css={{ _icon: { width: "5", height: "5" } }}
+            >
+              <a href={REPO_URL} target="_blank" rel="noreferrer noopener">
+                <LuGithub />
+              </a>
+            </IconButton>
+            <ColorModeButton />
+          </HStack>
         </HStack>
 
         <Stack gap={3}>
@@ -447,7 +481,8 @@ function App() {
               </Slider.Control>
             </Slider.Root>
             <Text fontSize="xs" color="fg.muted" mt={1}>
-              Higher depth plays better but takes longer. Applies to the next move.
+              Higher depth plays better but takes longer. Applies to the next
+              move.
             </Text>
           </Box>
 
@@ -455,13 +490,20 @@ function App() {
             <Button size="sm" onClick={() => resetTo(undefined, playerColor)}>
               New game
             </Button>
-            <Button size="sm" variant="outline" onClick={takeBack} disabled={!canTakeBack}>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={takeBack}
+              disabled={!canTakeBack}
+            >
               Take back
             </Button>
             <Button
               size="sm"
               variant="outline"
-              onClick={() => setOrientation(orientation === "white" ? "black" : "white")}
+              onClick={() =>
+                setOrientation(orientation === "white" ? "black" : "white")
+              }
             >
               Flip board
             </Button>
@@ -484,12 +526,14 @@ function App() {
                       {formatScore(
                         analysis.whiteScore,
                         isMateScore(analysis.whiteScore),
-                        analysis.info.pv.length
+                        analysis.info.pv.length,
                       )}
                     </Text>
                   </Text>
                   <Text color="fg.muted">depth {analysis.info.depth}</Text>
-                  <Text color="fg.muted">{formatNodes(analysis.info.nodes)} nodes</Text>
+                  <Text color="fg.muted">
+                    {formatNodes(analysis.info.nodes)} nodes
+                  </Text>
                   <Text color="fg.muted">{analysis.info.time} ms</Text>
                 </HStack>
                 {analysis.pv.length > 0 && (
@@ -550,13 +594,25 @@ function App() {
             placeholder="Paste a FEN to set up a position"
           />
           <HStack wrap="wrap" gap={2}>
-            <Button size="xs" variant="outline" onClick={() => resetTo(fenInput.trim(), playerColor)}>
+            <Button
+              size="xs"
+              variant="outline"
+              onClick={() => resetTo(fenInput.trim(), playerColor)}
+            >
               Load FEN
             </Button>
-            <Button size="xs" variant="outline" onClick={() => copy("FEN", fen)}>
+            <Button
+              size="xs"
+              variant="outline"
+              onClick={() => copy("FEN", fen)}
+            >
               {copied === "FEN" ? "Copied!" : "Copy FEN"}
             </Button>
-            <Button size="xs" variant="outline" onClick={() => copy("PGN", chess.pgn())}>
+            <Button
+              size="xs"
+              variant="outline"
+              onClick={() => copy("PGN", chess.pgn())}
+            >
               {copied === "PGN" ? "Copied!" : "Copy PGN"}
             </Button>
           </HStack>
